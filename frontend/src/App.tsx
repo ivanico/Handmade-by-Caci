@@ -5,6 +5,8 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import RegisterPage from '@/features/auth/pages/RegisterPage';
 import AdminLayout from '@/layouts/AdminLayout';
+import MainLayout from '@/layouts/MainLayout';
+import HomePage from '@/features/catalog/pages/HomePage';
 import DashboardPage from '@/features/admin/dashboard/DashboardPage';
 import AdminProductsPage from '@/features/admin/products/pages/AdminProductsPage';
 import AdminProductFormPage from '@/features/admin/products/pages/AdminProductFormPage';
@@ -18,7 +20,13 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<div>Home</div>} />
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/catalog" element={<div className="p-8">Catalog — coming soon</div>} />
+              <Route path="/products/:slug" element={<div className="p-8">Product — coming soon</div>} />
+              <Route path="/checkout" element={<div className="p-8">Checkout — coming soon</div>} />
+              <Route path="/order-confirmation/:orderNumber" element={<div className="p-8">Confirmation — coming soon</div>} />
+            </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute role="admin" />}>
