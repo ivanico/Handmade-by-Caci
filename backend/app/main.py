@@ -7,6 +7,9 @@ from app.core.config import settings
 from app.routers.auth import router as auth_router
 from app.routers.categories import router as categories_router
 from app.routers.admin.categories import router as admin_categories_router
+from app.routers.products import router as products_router
+from app.routers.admin.products import router as admin_products_router
+from app.routers.admin.stats import router as admin_stats_router
 
 app = FastAPI(title="Shop CMS")
 
@@ -23,6 +26,9 @@ app.mount("/media", StaticFiles(directory=settings.MEDIA_DIR), name="media")
 app.include_router(auth_router)
 app.include_router(categories_router)
 app.include_router(admin_categories_router)
+app.include_router(products_router)
+app.include_router(admin_products_router)
+app.include_router(admin_stats_router)
 
 
 @app.exception_handler(ValueError)

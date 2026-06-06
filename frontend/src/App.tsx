@@ -4,6 +4,11 @@ import AuthProvider from '@/routes/AuthProvider';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import RegisterPage from '@/features/auth/pages/RegisterPage';
+import AdminLayout from '@/layouts/AdminLayout';
+import DashboardPage from '@/features/admin/dashboard/DashboardPage';
+import AdminProductsPage from '@/features/admin/products/pages/AdminProductsPage';
+import AdminProductFormPage from '@/features/admin/products/pages/AdminProductFormPage';
+import AdminCategoriesPage from '@/features/admin/categories/pages/AdminCategoriesPage';
 
 const queryClient = new QueryClient();
 
@@ -17,7 +22,14 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute role="admin" />}>
-              <Route path="/admin/*" element={<div>Admin Dashboard</div>} />
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<DashboardPage />} />
+                <Route path="/admin/products" element={<AdminProductsPage />} />
+                <Route path="/admin/products/new" element={<AdminProductFormPage />} />
+                <Route path="/admin/products/:id/edit" element={<AdminProductFormPage />} />
+                <Route path="/admin/categories" element={<AdminCategoriesPage />} />
+                <Route path="/admin/*" element={<DashboardPage />} />
+              </Route>
             </Route>
           </Routes>
         </AuthProvider>
