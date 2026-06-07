@@ -86,6 +86,79 @@ Steps in one transaction:
 ```
 - **Done when**: hero, category grid (5 items), new arrivals all render with real data
 
+
+### Task 3.4.1 — UI Component Library & Base Styling
+**Read section 17 of FRONTEND_SKILL.md before starting.**
+
+This task applies the design system to the entire frontend. Do not skip — all subsequent tasks depend on these components.
+
+**Step 0 — Logo:**
+- Logo file: `public/Handmade-by-Caci-logo.png` (already placed there by user)
+- Use in Navbar: `<img src="/Handmade-by-Caci-logo.png" alt="Handmade by Caci" className="h-10 w-auto" />`
+- Use in Footer: same image, `className="h-8 w-auto"`
+- Never use a text fallback if the image fails — the logo is always present
+
+**Step 1 — Configure Tailwind and fonts:**
+- Update `tailwind.config.js` with custom colors, fonts, animations from FRONTEND_SKILL.md section 17
+- Replace contents of `src/index.css` with the base styles from section 17 (Google Fonts import + Tailwind directives + base layer)
+
+**Step 2 — Create shared UI components in `src/components/ui/`:**
+
+`Button.tsx` — props: `variant` (primary|secondary|ghost|danger), `size` (sm|md|lg), `isLoading`, `disabled`, `onClick`, `type`, `children`
+- primary: `bg-primary hover:bg-primary-dark text-white`
+- secondary: `border border-primary text-primary hover:bg-primary-light`
+- ghost: `text-gray-600 hover:text-gray-900 hover:bg-gray-100`
+- danger: `bg-red-500 hover:bg-red-600 text-white`
+- all: `rounded-md active:scale-95 transition-all duration-150`
+- isLoading: shows `<Spinner />` inline, disables button
+
+`Input.tsx` — props: `label`, `error`, `placeholder`, `type`, `value`, `onChange`, `required`
+- Style: `border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`
+- Shows red border + error message below if `error` prop set
+
+`Badge.tsx` — props: `variant` (success|error|warning|info|muted), `children`
+- success: `bg-green-100 text-green-800`
+- error: `bg-red-100 text-red-800`
+- warning: `bg-yellow-100 text-yellow-800`
+- info: `bg-blue-100 text-blue-800`
+- muted: `bg-gray-100 text-gray-600`
+- all: `rounded-full px-2.5 py-0.5 text-xs font-medium`
+
+`Spinner.tsx` — simple animated ring, size prop (sm|md|lg), color defaults to primary
+
+`Modal.tsx` — props: `isOpen`, `onClose`, `title`, `children`
+- Backdrop: `fixed inset-0 bg-black/40 z-50`
+- Panel: `bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-auto mt-20`
+- Close button top-right
+- Trap focus, close on backdrop click
+
+`SkeletonCard.tsx` — mimics ProductCard dimensions, `animate-pulse`, grey placeholder blocks for image + text lines
+
+**Step 3 — Update these specific already-built files to use the design system:**
+
+Files to update — replace raw `<button>` with `<Button>`, raw `<input>` with `<Input>`, apply card/font/color styles:
+- `src/layouts/AdminLayout.tsx` — apply `bg-white shadow-sm` to sidebar, `font-heading` to logo
+- `src/layouts/MainLayout.tsx` — `bg-white` background
+- `src/components/navbar/Navbar.tsx` — `bg-white shadow-sm`, `font-heading` to logo/brand name
+- `src/components/navbar/Navbar.MobileMenu.tsx` — replace any raw buttons with `<Button variant="ghost">`
+- `src/components/footer/Footer.tsx` — `bg-surface` background, `font-heading` to footer brand name
+- `src/features/admin/dashboard/DashboardPage.tsx` — `font-heading` to page title, `bg-white rounded-md shadow-sm` to stat cards
+- `src/features/admin/products/pages/AdminProductsPage.tsx` — replace all raw `<button>` with `<Button>`, `<SkeletonCard>` for loading rows
+- `src/features/admin/products/pages/AdminProductFormPage.tsx` — replace all raw `<input>/<textarea>` with `<Input>`, raw `<button>` with `<Button>`
+- `src/features/admin/products/components/ProductForm.tsx` — replace all raw `<input>/<textarea>/<select>` with `<Input>`, raw `<button>` with `<Button>`
+- `src/features/admin/categories/pages/AdminCategoriesPage.tsx` — replace raw `<button>` with `<Button>`, apply `bg-white rounded-md shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200` to category cards
+- `src/features/admin/categories/components/CategoryModal.tsx` — replace with `<Modal>` wrapper, raw `<input>` with `<Input>`, raw `<button>` with `<Button>`
+- `src/features/catalog/components/ProductCard/index.tsx` — apply `bg-white rounded-md shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200`
+- `src/features/catalog/components/ProductCard/ProductCard.Actions.tsx` — replace raw `<button>` with `<Button variant="primary">`
+- `src/features/catalog/components/ProductCard/ProductCard.Info.tsx` — `font-heading` to product name, `text-primary` to price
+- `src/features/catalog/pages/HomePage.tsx` — `font-heading` to section headings, `bg-surface` to alternate sections
+
+- **Done when**:
+  - `http://localhost:5173` shows blush pink colors, Cormorant Garamond headings
+  - All buttons are rounded-md with hover/active animations
+  - Product cards lift on hover with shadow
+  - No raw unstyled HTML buttons or inputs visible anywhere
+
 ### Task 3.5 — Catalog Page
 `/catalog`:
 - Sidebar (desktop, 260px sticky) / bottom-sheet drawer (mobile, "Filters" button):

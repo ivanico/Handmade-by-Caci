@@ -9,9 +9,9 @@ type Props = {
 export default function ProductCardInfo({ name, price, compare_at_price }: Props) {
   return (
     <>
-      <p className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug">{name}</p>
+      <p className="font-heading text-sm font-medium text-gray-900 line-clamp-2 leading-snug">{name}</p>
       <div className="flex items-center gap-2 mt-1">
-        <span className="text-sm font-semibold text-gray-900">{formatPrice(price)}</span>
+        <span className="text-sm font-semibold text-primary-dark">{formatPrice(price)}</span>
         {compare_at_price && (
           <span className="text-xs text-gray-400 line-through">{formatPrice(compare_at_price)}</span>
         )}

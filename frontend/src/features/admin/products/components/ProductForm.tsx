@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { adminProductsApi, type Category, type CreateProductData, type Product } from '../api/adminProductsApi';
 import ProductFormImageGrid from './ProductForm.ImageGrid';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
 function generateSlug(s: string) {
   return s
@@ -19,6 +21,10 @@ type Props = {
   onCancel: () => void;
   onImagesChanged: () => void;
 };
+
+const selectClass =
+  'w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent';
+const labelClass = 'block text-sm font-medium text-gray-700 mb-1';
 
 export default function ProductForm({ product, categories, onSave, onCancel, onImagesChanged }: Props) {
   const [name, setName] = useState(product?.name ?? '');
@@ -56,15 +62,16 @@ export default function ProductForm({ product, categories, onSave, onCancel, onI
     }
   };
 
-  const fieldClass = 'w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500';
-  const labelClass = 'block text-sm font-medium text-gray-700 mb-1';
-
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Name */}
       <div>
-        <label className={labelClass}>Name</label>
-        <input className={fieldClass} value={name} onChange={(e) => setName(e.target.value)} required />
+        <Input
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         {name && (
           <p className="text-xs text-gray-400 mt-1">Slug: {generateSlug(name)}</p>
         )}
@@ -74,7 +81,7 @@ export default function ProductForm({ product, categories, onSave, onCancel, onI
       <div>
         <label className={labelClass}>Category</label>
         <select
-          className={fieldClass}
+          className={selectClass}
           value={categoryId ?? ''}
           onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : null)}
         >
@@ -89,7 +96,7 @@ export default function ProductForm({ product, categories, onSave, onCancel, onI
       <div>
         <label className={labelClass}>Description</label>
         <textarea
-          className={fieldClass}
+          className={selectClass}
           rows={6}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -98,48 +105,41 @@ export default function ProductForm({ product, categories, onSave, onCancel, onI
 
       {/* Price row */}
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>Price</label>
-          <input
-            className={fieldClass}
-            type="number"
-            step="0.01"
-            min="0"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label className={labelClass}>Compare At Price</label>
-          <input
-            className={fieldClass}
-            type="number"
-            step="0.01"
-            min="0"
-            value={compareAtPrice}
-            onChange={(e) => setCompareAtPrice(e.target.value)}
-            placeholder="Optional"
-          />
-        </div>
+        <Input
+          label="Price"
+          type="number"
+          step="0.01"
+          min="0"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          required
+        />
+        <Input
+          label="Compare At Price"
+          type="number"
+          step="0.01"
+          min="0"
+          value={compareAtPrice}
+          onChange={(e) => setCompareAtPrice(e.target.value)}
+          placeholder="Optional"
+        />
       </div>
 
       {/* SKU + Stock */}
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>SKU</label>
-          <input className={fieldClass} value={sku} onChange={(e) => setSku(e.target.value)} required />
-        </div>
-        <div>
-          <label className={labelClass}>Stock Quantity</label>
-          <input
-            className={fieldClass}
-            type="number"
-            min="0"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-          />
-        </div>
+        <Input
+          label="SKU"
+          value={sku}
+          onChange={(e) => setSku(e.target.value)}
+          required
+        />
+        <Input
+          label="Stock Quantity"
+          type="number"
+          min="0"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+        />
       </div>
 
       {/* Toggles */}
@@ -183,20 +183,12 @@ export default function ProductForm({ product, categories, onSave, onCancel, onI
 
       {/* Footer */}
       <div className="flex gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {submitting ? 'Saving…' : 'Save'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 text-sm rounded hover:bg-gray-50"
-        >
+        <Button type="submit" variant="primary" isLoading={submitting}>
+          Save
+        </Button>
+        <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );

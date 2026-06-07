@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminCategoriesApi, type Category } from '../api/adminCategoriesApi';
 import CategoryModal from '../components/CategoryModal';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
 
 export default function AdminCategoriesPage() {
   const queryClient = useQueryClient();
@@ -49,13 +51,10 @@ export default function AdminCategoriesPage() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-semibold text-gray-900">Categories</h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-        >
+        <h1 className="text-xl font-heading text-gray-900">Categories</h1>
+        <Button variant="primary" size="sm" onClick={openCreate}>
           + New Category
-        </button>
+        </Button>
       </div>
 
       {deleteError && (
@@ -74,11 +73,11 @@ export default function AdminCategoriesPage() {
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col items-center gap-2"
+            className="bg-white border border-border rounded-md shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 p-4 flex flex-col items-center gap-2"
           >
             <div
               style={{ width: 80, height: 80 }}
-              className="rounded bg-gray-100 overflow-hidden border border-gray-200 shrink-0"
+              className="rounded bg-gray-100 overflow-hidden border border-border shrink-0"
             >
               {cat.image_url ? (
                 <img
@@ -91,35 +90,28 @@ export default function AdminCategoriesPage() {
 
             <p className="text-sm font-medium text-gray-900 text-center">{cat.name}</p>
 
-            <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+            <Badge variant="muted">
               {cat.product_count} {cat.product_count === 1 ? 'product' : 'products'}
-            </span>
+            </Badge>
 
-            <div className="flex gap-2 mt-1">
-              <button
-                onClick={() => openEdit(cat)}
-                className="text-xs text-blue-600 hover:underline"
-              >
+            <div className="flex gap-1 mt-1">
+              <Button variant="ghost" size="sm" onClick={() => openEdit(cat)}>
                 Edit
-              </button>
-              <button
-                onClick={() => handleDelete(cat)}
-                className="text-xs text-red-500 hover:text-red-700"
-              >
+              </Button>
+              <Button variant="danger" size="sm" onClick={() => handleDelete(cat)}>
                 Delete
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
 
-      {modalOpen && (
-        <CategoryModal
-          category={editCategory ?? undefined}
-          onClose={closeModal}
-          onSaved={handleSaved}
-        />
-      )}
+      <CategoryModal
+        isOpen={modalOpen}
+        category={editCategory ?? undefined}
+        onClose={closeModal}
+        onSaved={handleSaved}
+      />
     </div>
   );
 }

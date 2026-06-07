@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminProductsApi } from '../api/adminProductsApi';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Badge from '@/components/ui/Badge';
 
 export default function AdminProductsPage() {
   const queryClient = useQueryClient();
@@ -42,28 +45,28 @@ export default function AdminProductsPage() {
     <div className="p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">Products</h1>
+        <h1 className="text-xl font-heading text-gray-900">Products</h1>
         <Link
           to="/admin/products/new"
-          className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+          className="rounded-md active:scale-95 transition-all duration-150 font-medium inline-flex items-center justify-center px-4 py-2 text-sm bg-primary hover:bg-primary-dark text-white"
         >
           + New Product
         </Link>
       </div>
 
       {/* Search */}
-      <input
-        type="text"
-        placeholder="Search products…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-xs border border-gray-300 rounded px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      />
+      <div className="w-full max-w-xs mb-4">
+        <Input
+          placeholder="Search products…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="bg-white border border-border rounded-md overflow-hidden shadow-sm">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-gray-50 border-b border-border">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase w-14"></th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
@@ -95,7 +98,7 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3">
                   <div
                     style={{ width: 48, height: 48 }}
-                    className="rounded border border-gray-200 overflow-hidden bg-gray-100 shrink-0"
+                    className="rounded border border-border overflow-hidden bg-gray-100 shrink-0"
                   >
                     {p.primary_image && (
                       <img
@@ -109,7 +112,7 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3 font-medium text-gray-900">
                   <Link
                     to={`/admin/products/${p.id}/edit`}
-                    className="hover:text-blue-600"
+                    className="hover:text-primary-dark"
                   >
                     {p.name}
                   </Link>
@@ -119,37 +122,32 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3 text-gray-900">${Number(p.price).toFixed(2)}</td>
                 <td className="px-4 py-3 text-gray-500">{p.stock_quantity}</td>
                 <td className="px-4 py-3">
-                  <span
-                    className={
-                      'px-2 py-0.5 rounded-full text-xs font-medium ' +
-                      (p.is_active
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-gray-100 text-gray-500')
-                    }
-                  >
+                  <Badge variant={p.is_active ? 'success' : 'muted'}>
                     {p.is_active ? 'active' : 'inactive'}
-                  </span>
+                  </Badge>
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <div className="flex items-center justify-end gap-2">
+                  <div className="flex items-center justify-end gap-1">
                     <Link
                       to={`/admin/products/${p.id}/edit`}
-                      className="text-xs text-blue-600 hover:underline"
+                      className="text-xs text-primary-dark hover:underline px-2 py-1"
                     >
                       Edit
                     </Link>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => handleToggle(p.id, p.is_active)}
-                      className="text-xs text-gray-500 hover:text-gray-800"
                     >
                       {p.is_active ? 'Deactivate' : 'Activate'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
                       onClick={() => handleDelete(p.id)}
-                      className="text-xs text-red-500 hover:text-red-700"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </td>
               </tr>
@@ -161,23 +159,25 @@ export default function AdminProductsPage() {
       {/* Pagination */}
       {data && data.pages > 1 && (
         <div className="flex items-center gap-3 mt-4 text-sm">
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => setPage((p) => p - 1)}
             disabled={page === 1}
-            className="px-3 py-1.5 border border-gray-300 rounded disabled:opacity-40 hover:bg-gray-50"
           >
             Prev
-          </button>
+          </Button>
           <span className="text-gray-600">
             Page {data.page} of {data.pages}
           </span>
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => setPage((p) => p + 1)}
             disabled={page === data.pages}
-            className="px-3 py-1.5 border border-gray-300 rounded disabled:opacity-40 hover:bg-gray-50"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

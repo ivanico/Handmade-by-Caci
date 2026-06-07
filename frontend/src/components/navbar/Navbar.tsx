@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuthStore } from '@/store/authStore';
+import Button from '@/components/ui/Button';
 import NavbarCartIcon from './Navbar.CartIcon';
 import NavbarMobileMenu from './Navbar.MobileMenu';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   'text-sm font-medium transition-colors ' +
-  (isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900');
+  (isActive ? 'text-primary-dark' : 'text-gray-500 hover:text-gray-900');
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,13 +23,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link
-          to="/"
-          className="font-semibold text-lg tracking-wide text-gray-900 shrink-0"
-        >
-          Handmade by Caci
+        <Link to="/" className="shrink-0">
+          <img
+            src="/Handmade-by-Caci-logo.png"
+            alt="Handmade by Caci"
+            className="h-10 w-auto"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 ml-8">
@@ -49,12 +51,9 @@ export default function Navbar() {
                 <span className="text-sm text-gray-600 max-w-[120px] truncate">
                   {user.full_name || user.email}
                 </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-                >
+                <Button variant="ghost" size="sm" onClick={handleLogout}>
                   Logout
-                </button>
+                </Button>
               </>
             ) : (
               <>
@@ -66,7 +65,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   to="/register"
-                  className="text-sm bg-gray-900 text-white px-3 py-1.5 rounded-md hover:bg-gray-700 transition-colors"
+                  className="rounded-md active:scale-95 transition-all duration-150 font-medium inline-flex items-center justify-center px-3 py-1.5 text-sm bg-primary hover:bg-primary-dark text-white"
                 >
                   Register
                 </Link>
@@ -77,7 +76,7 @@ export default function Navbar() {
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
-            className="md:hidden p-2 text-gray-700 hover:text-gray-900 transition-colors"
+            className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

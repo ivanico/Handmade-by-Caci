@@ -13,7 +13,7 @@ Ecommerce shop for handmade jewelry and decorations.
 | Database | PostgreSQL 16 |
 | Cache | Redis 7 (cart sessions) |
 | Auth | JWT access token + httpOnly refresh cookie |
-| Storage | Local disk `/srv/shop/media/` |
+| Storage | Local disk `/home/vboxuser/Handmade-by-Caci/media/` |
 | Email | SMTP via fastapi-mail |
 
 ---
@@ -53,11 +53,11 @@ store/ (zustand)             repositories/
 
 | Thing | Path |
 |-------|------|
-| Backend app | `/srv/shop/backend/` |
-| Frontend app | `/srv/shop/frontend/` |
-| Media files | `/srv/shop/media/` |
-| Backend env | `/srv/shop/backend/.env` |
-| Frontend env | `/srv/shop/frontend/.env` |
+| Backend app | `/home/vboxuser/Handmade-by-Caci/backend/` |
+| Frontend app | `/home/vboxuser/Handmade-by-Caci/frontend/` |
+| Media files | `/home/vboxuser/Handmade-by-Caci/media/` |
+| Backend env | `/home/vboxuser/Handmade-by-Caci/backend/.env` |
+| Frontend env | `/home/vboxuser/Handmade-by-Caci/frontend/.env` |
 | Sprint tasks | `TASKS/` |
 
 ---

@@ -39,7 +39,7 @@ export default function AdminProductFormPage() {
 
   return (
     <div className="p-8 max-w-2xl">
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-xl font-heading text-gray-900 mb-6">
         {isEdit ? 'Edit Product' : 'New Product'}
       </h1>
       <ProductForm

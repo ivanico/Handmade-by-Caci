@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '@/store/authStore';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -28,21 +30,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '80px auto', padding: '0 16px' }}>
-      <h1>Sign in</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </div>
-        <div>
-          <label>Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button>
-      </form>
-      <p><Link to="/register">Create account</Link></p>
+    <div className="max-w-md mx-auto mt-20 px-4">
+      <div className="bg-white border border-border rounded-md shadow-sm p-8">
+        <h1 className="font-heading text-2xl text-gray-900 mb-6">Sign in</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <Button type="submit" variant="primary" isLoading={loading} className="w-full">
+            Sign in
+          </Button>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-primary-dark hover:underline">
+            Create account
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

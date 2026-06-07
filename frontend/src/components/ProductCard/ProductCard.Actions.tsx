@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import Button from '@/components/ui/Button';
 
 type Props = {
   stockQuantity: number;
@@ -11,18 +11,16 @@ export default function ProductCardActions({ stockQuantity, productId, onAddToCa
 
   return (
     <div className="px-3 pb-3 pt-2">
-      <button
+      <Button
+        variant="primary"
+        className="w-full"
         onClick={(e) => {
           e.preventDefault();
           onAddToCart?.(productId);
         }}
-        className={cn(
-          'w-full py-2 text-sm font-medium bg-gray-900 text-white rounded-lg',
-          'hover:bg-gray-700 active:bg-gray-800 transition-colors',
-        )}
       >
         Add to Cart
-      </button>
+      </Button>
     </div>
   );
 }

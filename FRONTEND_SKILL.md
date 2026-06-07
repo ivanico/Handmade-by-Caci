@@ -732,3 +732,133 @@ Before finalizing any code, verify:
 * [ ] Performance considerations applied where needed
 * [ ] Tailwind only — no inline styles
 * [ ] `cn()` used for conditional classes
+
+---
+
+## 17. Design System
+
+### Colors
+```
+Primary:     #ffb3bf  (blush pink)
+Primary light: #ffecf1 (pale rose)
+Primary dark:  #e8909f (deeper rose for hover states)
+Text:        #1a1a1a  (near black)
+Text muted:  #6b7280  (gray-500)
+Background:  #ffffff
+Surface:     #fff5f7  (very light pink tint for cards/sections)
+Border:      #ffd6de  (soft pink border)
+Success:     #10b981
+Error:       #ef4444
+Warning:     #f59e0b
+```
+
+Add to `tailwind.config.js`:
+```js
+theme: {
+  extend: {
+    colors: {
+      primary: {
+        DEFAULT: '#ffb3bf',
+        light: '#ffecf1',
+        dark: '#e8909f',
+      },
+      surface: '#fff5f7',
+      border: '#ffd6de',
+    },
+    fontFamily: {
+      heading: ['Cormorant Garamond', 'serif'],
+      body: ['Inter', 'sans-serif'],
+    },
+  },
+}
+```
+
+Add to `index.css`:
+```css
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    background-color: #ffffff;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+  }
+}
+```
+
+### Border Radius
+- Cards: `rounded-md` (6px)
+- Buttons: `rounded-md` (6px)
+- Inputs: `rounded-md` (6px)
+- Badges: `rounded-full`
+- Modals: `rounded-lg`
+- Never use `rounded-xl` or larger except for image containers
+
+### Shadows
+- Cards at rest: `shadow-sm`
+- Cards on hover: `shadow-md`
+- Modals/drawers: `shadow-xl`
+- Navbar: `shadow-sm`
+
+### Animations
+- Card hover lift: `hover:-translate-y-1 hover:shadow-md transition-all duration-200`
+- Button press: `active:scale-95 transition-transform duration-100`
+- Page transitions: `animate-fadeIn` (define in tailwind config)
+- Drawer slide-in: `transition-transform duration-300`
+- Skeleton pulse: `animate-pulse`
+
+Add to `tailwind.config.js` under `extend`:
+```js
+animation: {
+  fadeIn: 'fadeIn 0.2s ease-in-out',
+},
+keyframes: {
+  fadeIn: {
+    '0%': { opacity: '0', transform: 'translateY(4px)' },
+    '100%': { opacity: '1', transform: 'translateY(0)' },
+  },
+},
+```
+
+### Shared UI Components (`src/components/ui/`)
+These must exist and be used everywhere — never write raw HTML buttons, inputs, or badges:
+
+| Component | Usage |
+|-----------|-------|
+| `Button.tsx` | All buttons — variants: primary, secondary, ghost, danger |
+| `Input.tsx` | All text inputs |
+| `Badge.tsx` | Status badges — variants: success, error, warning, info, muted |
+| `Spinner.tsx` | Loading spinner |
+| `Modal.tsx` | All modals/dialogs |
+| `SkeletonCard.tsx` | Product card skeleton loader |
+
+### Button variants
+```tsx
+// primary — blush pink bg, white text
+className="bg-primary hover:bg-primary-dark text-white rounded-md px-4 py-2 active:scale-95 transition-all duration-150"
+
+// secondary — outline style
+className="border border-primary text-primary hover:bg-primary-light rounded-md px-4 py-2 transition-all duration-150"
+
+// ghost — no border, subtle hover
+className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md px-4 py-2 transition-all duration-150"
+
+// danger — for delete actions
+className="bg-red-500 hover:bg-red-600 text-white rounded-md px-4 py-2 active:scale-95 transition-all duration-150"
+```
+
+### Review additions
+* [ ] Colors match design system — no arbitrary color values
+* [ ] Fonts use heading/body classes correctly
+* [ ] Cards use `shadow-sm` + `hover:-translate-y-1 hover:shadow-md transition-all duration-200`
+* [ ] All buttons use `Button.tsx` component — no raw `<button>` with inline styles
+* [ ] All inputs use `Input.tsx` component
+* [ ] All badges use `Badge.tsx` component
+* [ ] Border radius follows the scale — `rounded-md` for cards/buttons

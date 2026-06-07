@@ -13,11 +13,11 @@ All services run natively via systemd.
 
 ### Dev commands
 ```
-backend:  cd /srv/shop/backend && source .venv/bin/activate && uvicorn app.main:app --reload --port 8000
-frontend: cd /srv/shop/frontend && npm run dev -- --port 5173
+backend:  cd /home/vboxuser/Handmade-by-Caci/backend && source .venv/bin/activate && uvicorn app.main:app --reload --port 8000
+frontend: cd /home/vboxuser/Handmade-by-Caci/frontend && npm run dev -- --port 5173
 ```
 
-`.env` lives at `/srv/shop/backend/.env` — never committed.
+`.env` lives at `/home/vboxuser/Handmade-by-Caci/backend/.env` — never committed.
 
 ---
 
@@ -27,7 +27,7 @@ frontend: cd /srv/shop/frontend && npm run dev -- --port 5173
 - **Database**: PostgreSQL 16, async via SQLAlchemy 2 + asyncpg, migrations via Alembic
 - **Cache**: Redis 7, used for cart sessions only
 - **Auth**: JWT — access token 15 min (JSON body), refresh token 7 days (httpOnly cookie)
-- **File Storage**: local disk at `/srv/shop/media/`, served by FastAPI `StaticFiles` at `/media/*`
+- **File Storage**: local disk at `/home/vboxuser/Handmade-by-Caci/media/`, served by FastAPI `StaticFiles` at `/media/*`
 - **Email**: SMTP via `fastapi-mail`
 - **Payments**: stub only — endpoint returns 501; no payment library installed
 
