@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     ADMIN_EMAIL: str = ""
     MEDIA_DIR: str = "/srv/shop/media"
     FRONTEND_URL: str = "http://localhost:5173"
+    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:5174"]
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

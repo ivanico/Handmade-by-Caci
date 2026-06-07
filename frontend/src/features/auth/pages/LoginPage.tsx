@@ -19,6 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const { data: tokenData } = await authApi.login(email, password);
+      useAuthStore.getState().setToken(tokenData.access_token);
       const { data: user } = await authApi.me();
       setAuth(user, tokenData.access_token);
       navigate(user.role === 'admin' ? '/admin' : '/');
