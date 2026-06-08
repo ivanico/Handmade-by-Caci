@@ -98,8 +98,13 @@ async def create_order(
         await cart_repository.delete_cart(redis, cart_id)
 
     order_snapshot = OrderOut.model_validate(order)
-    asyncio.create_task(email_service.send_customer_confirmation(order_snapshot))
-    asyncio.create_task(email_service.send_admin_notification(order_snapshot))
+
+    async def _send_emails() -> None:
+        await email_service.send_customer_confirmation(order_snapshot)
+        await asyncio.sleep(1)
+        await email_service.send_admin_notification(order_snapshot)
+
+    asyncio.create_task(_send_emails())
 
     return order
 

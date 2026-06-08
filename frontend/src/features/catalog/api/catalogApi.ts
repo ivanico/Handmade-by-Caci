@@ -8,6 +8,8 @@ interface ProductQueryParams {
   page?: number;
   category?: string;
   search?: string;
+  min_price?: number;
+  max_price?: number;
 }
 
 export const catalogApi = {

@@ -29,14 +29,11 @@ export default function Navbar() {
           <img
             src="/Handmade-by-Caci-logo.png"
             alt="Handmade by Caci"
-            className="h-10 w-auto"
+            className="h-22 w-auto"
           />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 ml-8">
-          <NavLink to="/" end className={navLinkClass}>
-            Home
-          </NavLink>
           <NavLink to="/catalog" className={navLinkClass}>
             Catalog
           </NavLink>

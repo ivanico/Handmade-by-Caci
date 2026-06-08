@@ -17,6 +17,8 @@ async def list_products(
     limit: int = 24,
     active_only: bool = True,
     featured: bool | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
 ) -> tuple[list[Product], int]:
     q = select(Product)
     if active_only:
@@ -32,6 +34,10 @@ async def list_products(
         )
     if featured:
         q = q.where(Product.is_featured == True)
+    if min_price is not None:
+        q = q.where(Product.price >= min_price)
+    if max_price is not None:
+        q = q.where(Product.price <= max_price)
 
     count_result = await db.execute(select(func.count()).select_from(q.subquery()))
     total = count_result.scalar_one()

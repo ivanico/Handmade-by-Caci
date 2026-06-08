@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuthStore } from '@/store/authStore';
 import Button from '@/components/ui/Button';
+import ToastContainer from '@/components/common/ToastContainer';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -11,6 +13,7 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
@@ -23,12 +26,26 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <aside className="w-60 shrink-0 bg-white shadow-sm border-r border-border text-gray-700 flex flex-col fixed inset-y-0 left-0">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 w-60 shrink-0 bg-white shadow-sm border-r border-border text-gray-700 flex flex-col z-40 transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
         <div className="px-6 py-5 border-b border-border">
           <img
             src="/Handmade-by-Caci-logo.png"
             alt="Handmade by Caci"
-            className="h-10 w-auto"
+            className="h-14 w-auto"
           />
         </div>
 
@@ -38,6 +55,7 @@ export default function AdminLayout() {
               key={to}
               to={to}
               end={end}
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 'flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ' +
                 (isActive
@@ -60,9 +78,32 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      <main className="ml-60 flex-1 overflow-y-auto">
+      {/* Main content */}
+      <main className="md:ml-60 flex-1 overflow-y-auto flex flex-col">
+        {/* Mobile topbar */}
+        <div className="sticky top-0 md:hidden bg-white border-b border-border h-12 flex items-center px-4 shrink-0 z-10">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
+            className="p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <span className="ml-3 font-heading text-gray-900 text-sm">Admin</span>
+        </div>
         <Outlet />
       </main>
+
+      <ToastContainer />
     </div>
   );
 }

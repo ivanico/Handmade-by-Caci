@@ -57,6 +57,8 @@ async def list_products(
     page: int = 1,
     limit: int = 24,
     featured: bool | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
 ) -> dict:
     category_id = None
     if category_slug:
@@ -74,6 +76,8 @@ async def list_products(
         limit=limit,
         active_only=True,
         featured=featured,
+        min_price=min_price,
+        max_price=max_price,
     )
     return {
         "items": [_list_dict(p) for p in products],

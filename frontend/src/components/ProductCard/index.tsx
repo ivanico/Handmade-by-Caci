@@ -18,7 +18,7 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
   return (
     <Link
       to={APP_ROUTES.PRODUCT(product.slug)}
-      className="group flex flex-col rounded-md overflow-hidden border border-border bg-white shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col rounded-md overflow-hidden border border-border bg-white shadow-sm md:hover:-translate-y-1 md:hover:shadow-md transition-all duration-200"
     >
       {/* Image area with overlays */}
       <div className="relative">

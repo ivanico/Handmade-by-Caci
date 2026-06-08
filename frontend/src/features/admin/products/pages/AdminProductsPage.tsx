@@ -42,9 +42,9 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-6">
         <h1 className="text-xl font-heading text-gray-900">Products</h1>
         <Link
           to="/admin/products/new"
@@ -64,7 +64,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-border rounded-md overflow-hidden shadow-sm">
+      <div className="bg-white border border-border rounded-md overflow-x-auto shadow-sm">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-border">
             <tr>

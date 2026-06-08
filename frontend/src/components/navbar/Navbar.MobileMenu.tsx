@@ -24,7 +24,7 @@ export default function NavbarMobileMenu({ isOpen, onClose, user, onLogout }: Pr
         onClick={onClose}
       />
 
-      <div className="fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-xl flex flex-col">
+      <div className="fixed top-0 right-0 h-full w-full bg-white z-50 shadow-xl flex flex-col">
         <div className="flex items-center justify-between px-4 h-16 border-b border-border">
           <span className="font-heading text-gray-900">Menu</span>
           <button
@@ -46,9 +46,6 @@ export default function NavbarMobileMenu({ isOpen, onClose, user, onLogout }: Pr
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1">
-          <NavLink to="/" end className={navLinkClass} onClick={onClose}>
-            Home
-          </NavLink>
           <NavLink to="/catalog" className={navLinkClass} onClick={onClose}>
             Catalog
           </NavLink>

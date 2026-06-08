@@ -21,6 +21,8 @@ async def list_products(
     page: int = Query(1, ge=1),
     limit: int = Query(24, le=48),
     featured: bool | None = Query(None),
+    min_price: float | None = Query(None, ge=0),
+    max_price: float | None = Query(None, ge=0),
     db: AsyncSession = Depends(get_db),
 ):
     try:
@@ -32,6 +34,8 @@ async def list_products(
             page=page,
             limit=limit,
             featured=featured,
+            min_price=min_price,
+            max_price=max_price,
         )
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc))

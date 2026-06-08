@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { useCart } from '@/hooks/useCart';
 
 type Props = {
   stockQuantity: number;
@@ -7,6 +8,8 @@ type Props = {
 };
 
 export default function ProductCardActions({ stockQuantity, productId, onAddToCart }: Props) {
+  const { addItem, isAdding } = useCart();
+
   if (stockQuantity === 0) return null;
 
   return (
@@ -14,8 +17,10 @@ export default function ProductCardActions({ stockQuantity, productId, onAddToCa
       <Button
         variant="primary"
         className="w-full"
+        isLoading={isAdding}
         onClick={(e) => {
           e.preventDefault();
+          addItem(productId, 1);
           onAddToCart?.(productId);
         }}
       >

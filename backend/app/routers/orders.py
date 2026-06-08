@@ -34,3 +34,9 @@ async def get_order(
     except ValueError as e:
         status_code = 403 if "Forbidden" in str(e) else 404
         raise HTTPException(status_code=status_code, detail=str(e))
+
+
+@router.post("/{order_id}/pay", status_code=501)
+async def pay_order(order_id: int):
+    # TODO wire Stripe or PayPal here
+    raise HTTPException(status_code=501, detail="Payment not implemented")

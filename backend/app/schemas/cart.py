@@ -17,7 +17,7 @@ class CartItemOut(BaseModel):
     quantity: int
     name: str
     price: float
-    stock_quantity: int
+    available_quantity: int
     image_url: str | None
 
 
