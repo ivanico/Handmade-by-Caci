@@ -23,7 +23,7 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-8 animate-pulse">
+      <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="aspect-square bg-gray-200 rounded-md" />
           <div className="space-y-4 pt-2">
@@ -61,7 +61,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-sm text-gray-500 mb-6 flex-wrap">
         <Link to={APP_ROUTES.HOME} className="hover:text-gray-900 transition-colors">Home</Link>

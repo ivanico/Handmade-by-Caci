@@ -1,9 +1,12 @@
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import type { ImageRef, ProductListItem } from '@/types/common';
 import { APP_ROUTES } from '@/constants/routes';
 import ProductCardActions from './ProductCard.Actions';
 import ProductCardImage from './ProductCard.Image';
 import ProductCardInfo from './ProductCard.Info';
+
+const MotionLink = motion(Link);
 
 type Props = {
   product: ProductListItem;
@@ -15,13 +18,33 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
   const hoverImage = images && images.length > 1 ? images[1] : undefined;
   const isOutOfStock = product.stock_quantity === 0;
 
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springConfig = { stiffness: 150, damping: 20 };
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [-8, 8]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+
+  function handleMouseLeave() {
+    mouseX.set(0);
+    mouseY.set(0);
+  }
+
   return (
-    <Link
+    <MotionLink
       to={APP_ROUTES.PRODUCT(product.slug)}
-      className="group flex flex-col rounded-md overflow-hidden border border-border bg-white shadow-sm md:hover:-translate-y-1 md:hover:shadow-md transition-all duration-200"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformPerspective: 600 }}
+      className="group flex flex-col rounded-md overflow-hidden border border-border bg-white shadow-sm md:hover:shadow-md transition-shadow duration-200"
     >
       {/* Image area with overlays */}
-      <div className="relative">
+      <div className="relative p-3">
         <ProductCardImage
           primaryImage={product.primary_image}
           hoverImage={hoverImage}
@@ -58,6 +81,6 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
         productId={product.id}
         onAddToCart={onAddToCart}
       />
-    </Link>
+    </MotionLink>
   );
 }

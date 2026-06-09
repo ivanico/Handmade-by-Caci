@@ -9,7 +9,7 @@ type Props = {
 export default function ProductCardImage({ primaryImage, hoverImage, name }: Props) {
   if (!primaryImage) {
     return (
-      <div className="aspect-square bg-stone-100 flex items-center justify-center">
+      <div className="aspect-square bg-stone-100 flex items-center justify-center rounded-sm">
         <span className="text-gray-300 text-4xl">✦</span>
       </div>
     );

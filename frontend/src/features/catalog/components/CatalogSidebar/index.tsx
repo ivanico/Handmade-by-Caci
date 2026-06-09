@@ -4,10 +4,12 @@ import type { CatalogFilters } from '@/hooks/useCatalogFilters';
 import Button from '@/components/ui/Button';
 import CatalogSidebarFilters from './CatalogSidebar.Filters';
 
+type SetFilterFn = ((key: string, value: string) => void) & ((updates: Record<string, string>) => void);
+
 type Props = {
   categories: Category[];
   filters: CatalogFilters;
-  setFilter: (key: string, value: string) => void;
+  setFilter: SetFilterFn;
   clearFilters: () => void;
 };
 
@@ -18,9 +20,8 @@ export default function CatalogSidebar({ categories, filters, setFilter, clearFi
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:block w-[260px] shrink-0">
-        <div className="sticky top-4 bg-surface border border-border rounded-md p-4 shadow-sm">
+        <div className="sticky top-4">
           <CatalogSidebarFilters
-            categories={categories}
             filters={filters}
             setFilter={setFilter}
             clearFilters={clearFilters}
@@ -52,10 +53,10 @@ export default function CatalogSidebar({ categories, filters, setFilter, clearFi
               </Button>
             </div>
             <CatalogSidebarFilters
-              categories={categories}
               filters={filters}
-              setFilter={(key, value) => {
-                setFilter(key, value);
+              setFilter={(keyOrUpdates: string | Record<string, string>, value?: string) => {
+                if (typeof keyOrUpdates === 'string') setFilter(keyOrUpdates, value!);
+                else setFilter(keyOrUpdates);
                 setDrawerOpen(false);
               }}
               clearFilters={() => {

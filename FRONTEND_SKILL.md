@@ -767,7 +767,7 @@ theme: {
     },
     fontFamily: {
       heading: ['Cormorant Garamond', 'serif'],
-      body: ['Inter', 'sans-serif'],
+      body: ['Raleway', 'sans-serif'],
     },
   },
 }
@@ -775,7 +775,7 @@ theme: {
 
 Add to `index.css`:
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Raleway:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -783,7 +783,7 @@ Add to `index.css`:
 
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: #1a1a1a;
     background-color: #ffffff;
   }

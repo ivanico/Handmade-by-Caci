@@ -27,8 +27,7 @@ export default function CatalogPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="font-heading text-3xl text-gray-900 mb-6">Shop</h1>
+    <div className="bg-white max-w-7xl mx-auto px-8 py-8">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         <CatalogSidebar
           categories={categories}

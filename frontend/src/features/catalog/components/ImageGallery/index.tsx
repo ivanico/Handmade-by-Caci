@@ -44,22 +44,13 @@ export default function ImageGallery({ images, name }: Props) {
           src={src}
           alt={active.alt_text ?? name}
           className="w-full h-full object-contain animate-fadeIn"
-        />
-      </div>
-
-      {/* Zoom panel — appears to the right on desktop, overlapping the info column */}
-      {zoom && (
-        <div
-          className="hidden md:block absolute top-0 aspect-square w-full rounded-md shadow-xl z-20 border border-border pointer-events-none"
           style={{
-            left: 'calc(100% + 2.5rem)',
-            backgroundImage: `url(${src})`,
-            backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-            backgroundSize: '280%',
-            backgroundRepeat: 'no-repeat',
+            transform: zoom ? 'scale(2)' : 'scale(1)',
+            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+            transition: zoom ? 'none' : 'transform 100ms ease-out, opacity 100ms ease-out',
           }}
         />
-      )}
+      </div>
 
       {images.length > 1 && (
         <ImageGalleryThumbnails

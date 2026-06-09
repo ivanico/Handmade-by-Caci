@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
-import type { Category } from '@/types/common';
+import { useState, useEffect, useRef } from 'react';
 import type { CatalogFilters } from '@/hooks/useCatalogFilters';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
+
+type SetFilterFn = ((key: string, value: string) => void) & ((updates: Record<string, string>) => void);
 
 type Props = {
-  categories: Category[];
   filters: CatalogFilters;
-  setFilter: (key: string, value: string) => void;
+  setFilter: SetFilterFn;
   clearFilters: () => void;
 };
 
@@ -17,10 +16,17 @@ const SORT_OPTIONS = [
   { label: 'Price ↓', value: 'price_desc' },
 ];
 
-export default function CatalogSidebarFilters({ categories, filters, setFilter, clearFilters }: Props) {
+const sectionTitle =
+  'font-heading text-sm uppercase tracking-widest text-gray-400 border-b border-primary pb-1 mb-3';
+
+const inputClass =
+  'border-0 border-b border-gray-200 focus:border-primary rounded-none px-0 py-1 bg-transparent text-sm w-full outline-none transition-colors';
+
+export default function CatalogSidebarFilters({ filters, setFilter, clearFilters }: Props) {
   const [minDraft, setMinDraft] = useState(filters.minPrice);
   const [maxDraft, setMaxDraft] = useState(filters.maxPrice);
   const [priceError, setPriceError] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setMinDraft(filters.minPrice); }, [filters.minPrice]);
   useEffect(() => { setMaxDraft(filters.maxPrice); }, [filters.maxPrice]);
@@ -36,6 +42,20 @@ export default function CatalogSidebarFilters({ categories, filters, setFilter, 
     setFilter({ min_price: minDraft, max_price: maxDraft });
   }
 
+  function scheduledApply(newMin: string, newMax: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const min = newMin ? Number(newMin) : null;
+      const max = newMax ? Number(newMax) : null;
+      if (min !== null && max !== null && min > max) {
+        setPriceError('Min must be less than Max');
+        return;
+      }
+      setPriceError('');
+      setFilter({ min_price: newMin, max_price: newMax });
+    }, 600);
+  }
+
   function handlePriceKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') applyPrice();
   }
@@ -43,80 +63,80 @@ export default function CatalogSidebarFilters({ categories, filters, setFilter, 
   const hasFilters = filters.category || filters.sort || filters.minPrice || filters.maxPrice;
 
   return (
-    <div className="space-y-6">
-      {/* Categories */}
-      <div>
-        <h3 className="font-heading text-base font-semibold text-gray-900 mb-3">Categories</h3>
-        <ul className="space-y-2">
-          {categories.filter((c) => c.is_active).map((cat) => (
-            <li key={cat.id}>
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 hover:text-gray-900">
-                <input
-                  type="checkbox"
-                  className="accent-primary rounded"
-                  checked={filters.category === cat.slug}
-                  onChange={() =>
-                    setFilter('category', filters.category === cat.slug ? '' : cat.slug)
-                  }
-                />
-                {cat.name}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
-
+    <div className="space-y-8">
       {/* Price */}
       <div>
-        <h3 className="font-heading text-base font-semibold text-gray-900 mb-3">Price</h3>
-        <div className="space-y-2">
-          <Input
-            label="Min"
-            type="number"
-            min={0}
-            placeholder="0"
-            value={minDraft}
-            onChange={(e) => { setMinDraft(e.target.value); setPriceError(''); }}
-            onBlur={applyPrice}
-            onKeyDown={handlePriceKeyDown}
-          />
-          <Input
-            label="Max"
-            type="number"
-            min={0}
-            placeholder="Any"
-            value={maxDraft}
-            onChange={(e) => { setMaxDraft(e.target.value); setPriceError(''); }}
-            onBlur={applyPrice}
-            onKeyDown={handlePriceKeyDown}
-          />
+        <h3 className={sectionTitle}>Price</h3>
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-gray-400 block mb-0.5">Min</label>
+            <input
+              type="number"
+              min={0}
+              placeholder="0"
+              value={minDraft}
+              className={inputClass}
+              onChange={(e) => {
+                const val = e.target.value;
+                setMinDraft(val);
+                setPriceError('');
+                scheduledApply(val, maxDraft);
+              }}
+              onBlur={applyPrice}
+              onKeyDown={handlePriceKeyDown}
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-400 block mb-0.5">Max</label>
+            <input
+              type="number"
+              min={0}
+              placeholder="Any"
+              value={maxDraft}
+              className={inputClass}
+              onChange={(e) => {
+                const val = e.target.value;
+                setMaxDraft(val);
+                setPriceError('');
+                scheduledApply(minDraft, val);
+              }}
+              onBlur={applyPrice}
+              onKeyDown={handlePriceKeyDown}
+            />
+          </div>
           {priceError && <p className="text-xs text-red-500">{priceError}</p>}
         </div>
       </div>
 
       {/* Sort */}
       <div>
-        <h3 className="font-heading text-base font-semibold text-gray-900 mb-3">Sort By</h3>
-        <fieldset className="space-y-2">
+        <h3 className={sectionTitle}>Sort By</h3>
+        <div className="flex flex-wrap gap-2">
           {SORT_OPTIONS.map((opt) => (
-            <label key={opt.value} className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 hover:text-gray-900">
-              <input
-                type="radio"
-                name="sort"
-                className="accent-primary"
-                value={opt.value}
-                checked={filters.sort === opt.value}
-                onChange={() => setFilter('sort', opt.value)}
-              />
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setFilter('sort', opt.value)}
+              className={
+                filters.sort === opt.value
+                  ? 'border border-primary bg-primary-light text-gray-800 rounded-full px-3 py-1 text-xs'
+                  : 'border border-gray-200 rounded-full px-3 py-1 text-xs text-gray-600 bg-transparent hover:bg-surface'
+              }
+            >
               {opt.label}
-            </label>
+            </button>
           ))}
-        </fieldset>
+        </div>
       </div>
 
       {/* Clear */}
       {hasFilters && (
-        <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearFilters}
+          className="w-full hover:bg-primary-light hover:text-primary-dark"
+        >
           Clear filters
         </Button>
       )}
