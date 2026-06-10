@@ -41,21 +41,14 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformPerspective: 600 }}
-      className="group flex flex-col rounded-md overflow-hidden border border-border bg-white shadow-sm md:hover:shadow-md transition-shadow duration-200"
+      className="group flex flex-col cursor-pointer"
     >
-      {/* Image area with overlays */}
-      <div className="relative p-3">
+      <div className="relative overflow-hidden bg-secondary aspect-[3/4] rounded-[6px]">
         <ProductCardImage
           primaryImage={product.primary_image}
           hoverImage={hoverImage}
           name={product.name}
         />
-
-        {product.category && (
-          <span className="absolute top-2 left-2 bg-white/85 backdrop-blur-sm text-gray-700 text-[10px] font-medium px-2 py-0.5 rounded-full">
-            {product.category.name}
-          </span>
-        )}
 
         {isOutOfStock && (
           <div className="absolute inset-0 bg-white/60 flex items-end">
@@ -64,23 +57,22 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
             </span>
           </div>
         )}
+
+        <ProductCardActions
+          stockQuantity={product.stock_quantity}
+          productId={product.id}
+          onAddToCart={onAddToCart}
+        />
       </div>
 
-      {/* Text info */}
-      <div className="px-3 pt-3 flex-1">
+      <div className="px-3 py-2 bg-white">
         <ProductCardInfo
           name={product.name}
           price={product.price}
           compare_at_price={product.compare_at_price}
+          category={product.category?.name}
         />
       </div>
-
-      {/* Add to Cart button */}
-      <ProductCardActions
-        stockQuantity={product.stock_quantity}
-        productId={product.id}
-        onAddToCart={onAddToCart}
-      />
     </MotionLink>
   );
 }

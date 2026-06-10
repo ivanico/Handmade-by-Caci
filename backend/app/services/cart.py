@@ -24,7 +24,7 @@ async def get_cart(redis: aioredis.Redis, db: AsyncSession, cart_id: str) -> Car
                 name=product.name,
                 price=price,
                 available_quantity=product.stock_quantity,
-                image_url=image_url,
+                image_url=image_url,  
             )
         )
         subtotal += price * item["quantity"]

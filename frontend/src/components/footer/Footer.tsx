@@ -48,10 +48,10 @@ export default function Footer() {
               Contact
             </h4>
             <a
-              href="mailto:trudno.pile3@gmail.com"
+              href="mailto:handmade.caci@gmail.com"
               className="text-sm hover:text-gray-900 transition-colors"
             >
-              trudno.pile3@gmail.com
+              handmade.caci@gmail.com
             </a>
           </div>
         </div>

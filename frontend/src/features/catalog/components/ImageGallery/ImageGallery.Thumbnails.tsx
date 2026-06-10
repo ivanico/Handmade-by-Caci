@@ -9,13 +9,13 @@ type Props = {
 
 export default function ImageGalleryThumbnails({ images, activeIndex, onSelect }: Props) {
   return (
-    <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+    <div className="hidden sm:flex flex-col gap-3 w-20 shrink-0">
       {images.map((img, i) => (
         <button
           key={img.id}
           onClick={() => onSelect(i)}
           className={cn(
-            'shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-all duration-150',
+            'relative aspect-square overflow-hidden rounded-[6px] border-2 transition-colors',
             i === activeIndex ? 'border-primary-dark' : 'border-transparent hover:border-border',
           )}
           aria-label={img.alt_text ?? `Image ${i + 1}`}

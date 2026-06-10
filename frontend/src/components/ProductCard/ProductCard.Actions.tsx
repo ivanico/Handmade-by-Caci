@@ -1,4 +1,3 @@
-import Button from '@/components/ui/Button';
 import { useCart } from '@/hooks/useCart';
 
 type Props = {
@@ -13,19 +12,19 @@ export default function ProductCardActions({ stockQuantity, productId, onAddToCa
   if (stockQuantity === 0) return null;
 
   return (
-    <div className="px-3 pb-3 pt-2">
-      <Button
-        variant="primary"
-        className="w-full"
-        isLoading={isAdding}
+    <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <button
+        disabled={isAdding}
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           addItem(productId, 1);
           onAddToCart?.(productId);
         }}
+        className="w-full py-3.5 bg-primary text-primary-foreground text-sm tracking-wide hover:bg-accent hover:text-foreground transition-colors disabled:opacity-50"
       >
-        Add to Cart
-      </Button>
+        {isAdding ? 'Adding…' : 'Add to Cart'}
+      </button>
     </div>
   );
 }

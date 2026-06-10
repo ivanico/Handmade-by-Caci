@@ -4,16 +4,20 @@ type Props = {
   name: string;
   price: string;
   compare_at_price: string | null;
+  category?: string;
 };
 
-export default function ProductCardInfo({ name, price, compare_at_price }: Props) {
+export default function ProductCardInfo({ name, price, compare_at_price, category }: Props) {
   return (
     <>
-      <p className="font-heading text-sm font-medium text-gray-900 line-clamp-2 leading-snug">{name}</p>
-      <div className="flex items-center gap-2 mt-1">
-        <span className="text-sm font-semibold text-primary-dark">{formatPrice(price)}</span>
+      {category && (
+        <p className="text-xs tracking-widest uppercase text-muted-foreground mb-1">{category}</p>
+      )}
+      <p className="font-semibold text-foreground mb-1">{name}</p>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-primary font-medium">{formatPrice(price)}</span>
         {compare_at_price && (
-          <span className="text-xs text-gray-400 line-through">{formatPrice(compare_at_price)}</span>
+          <span className="text-xs text-muted-foreground line-through">{formatPrice(compare_at_price)}</span>
         )}
       </div>
     </>
