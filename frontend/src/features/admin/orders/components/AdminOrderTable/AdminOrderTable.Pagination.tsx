@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Button from '@/components/ui/Button';
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
 };
 
 export default function AdminOrderTablePagination({ page, pages, onPage }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3 mt-4 text-sm">
       <Button
@@ -15,10 +17,10 @@ export default function AdminOrderTablePagination({ page, pages, onPage }: Props
         onClick={() => onPage(page - 1)}
         disabled={page === 1}
       >
-        Prev
+        {t('admin.prev')}
       </Button>
       <span className="text-gray-600">
-        Page {page} of {pages}
+        {t('admin.page', { page, pages })}
       </span>
       <Button
         variant="secondary"
@@ -26,7 +28,7 @@ export default function AdminOrderTablePagination({ page, pages, onPage }: Props
         onClick={() => onPage(page + 1)}
         disabled={page === pages}
       >
-        Next
+        {t('admin.next')}
       </Button>
     </div>
   );

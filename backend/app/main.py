@@ -2,6 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.formparsers import MultiPartParser
+
+MultiPartParser.max_file_size = 10 * 1024 * 1024  # 10 MB per file
 
 from app.core.config import settings
 from app.routers.auth import router as auth_router

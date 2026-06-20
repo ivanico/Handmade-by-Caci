@@ -1,14 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import type { Cart } from '@/types/common';
 import { formatPrice } from '@/utils/formatters';
 
-type Props = {
-  cart: Cart;
-};
+type Props = { cart: Cart };
 
 export default function OrderSummary({ cart }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="bg-surface rounded-md border border-border p-4 space-y-3 h-fit">
-      <h2 className="font-heading text-lg text-gray-900">Order Summary</h2>
+      <h2 className="font-heading text-lg text-gray-900">{t('checkout.orderSummary')}</h2>
       <div className="space-y-2">
         {cart.items.map((item) => (
           <div key={item.product_id} className="flex justify-between text-sm">
@@ -20,7 +20,7 @@ export default function OrderSummary({ cart }: Props) {
         ))}
       </div>
       <div className="border-t border-border pt-3 flex justify-between font-semibold text-sm">
-        <span>Total</span>
+        <span>{t('checkout.total')}</span>
         <span className="text-primary-dark">{formatPrice(cart.subtotal)}</span>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { adminCategoriesApi, type Category } from '../api/adminCategoriesApi';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
@@ -12,9 +13,12 @@ type Props = {
 };
 
 export default function CategoryModal({ isOpen, category, onClose, onSaved }: Props) {
+  const { t } = useTranslation();
   const isEdit = Boolean(category);
   const [name, setName] = useState(category?.name ?? '');
+  const [nameMk, setNameMk] = useState(category?.name_mk ?? '');
   const [description, setDescription] = useState(category?.description ?? '');
+  const [descriptionMk, setDescriptionMk] = useState(category?.description_mk ?? '');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -26,8 +30,18 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
     setSubmitting(true);
     try {
       const saved = isEdit
-        ? await adminCategoriesApi.update(category!.id, { name, description: description || null })
-        : await adminCategoriesApi.create({ name, description: description || null });
+        ? await adminCategoriesApi.update(category!.id, {
+            name,
+            name_mk: nameMk || null,
+            description: description || null,
+            description_mk: descriptionMk || null,
+          })
+        : await adminCategoriesApi.create({
+            name,
+            name_mk: nameMk || null,
+            description: description || null,
+            description_mk: descriptionMk || null,
+          });
       if (imageFile) {
         await adminCategoriesApi.uploadImage(saved.data.id, imageFile);
       }
@@ -46,18 +60,24 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? 'Edit Category' : 'New Category'}
+      title={isEdit ? t('admin.editCategory') : t('admin.newCategoryHeading')}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Name"
+          label={t('admin.categoryName')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
 
+        <Input
+          label={t('admin.categoryNameMk')}
+          value={nameMk}
+          onChange={(e) => setNameMk(e.target.value)}
+        />
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.categoryDescription')}</label>
           <textarea
             className={textareaClass}
             rows={3}
@@ -67,7 +87,17 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.categoryDescriptionMk')}</label>
+          <textarea
+            className={textareaClass}
+            rows={3}
+            value={descriptionMk}
+            onChange={(e) => setDescriptionMk(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.image')}</label>
           {isEdit && category?.image_url && (
             <div className="mb-2">
               <div
@@ -80,7 +110,7 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-1">Current image</p>
+              <p className="text-xs text-gray-400 mt-1">{t('admin.currentImage')}</p>
             </div>
           )}
           <input
@@ -91,7 +121,7 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
             onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
           />
           <Button type="button" variant="secondary" size="sm" onClick={() => fileRef.current?.click()}>
-            {imageFile ? imageFile.name : isEdit ? 'Replace image' : 'Choose image'}
+            {imageFile ? imageFile.name : isEdit ? t('admin.replaceImage') : t('admin.chooseImage')}
           </Button>
         </div>
 
@@ -99,10 +129,10 @@ export default function CategoryModal({ isOpen, category, onClose, onSaved }: Pr
 
         <div className="flex gap-3 pt-1">
           <Button type="submit" variant="primary" isLoading={submitting}>
-            Save
+            {t('admin.save')}
           </Button>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('admin.cancel')}
           </Button>
         </div>
       </form>

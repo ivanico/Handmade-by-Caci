@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { getLocalized } from '@/hooks/useLocalized';
 import { APP_ROUTES } from '@/constants/routes';
 import { LOW_STOCK_THRESHOLD } from '@/constants/ui';
 import { useProductDetail } from '@/hooks/useProductDetail';
@@ -17,6 +19,7 @@ export default function ProductDetailPage() {
   const { data: product, isLoading, isError } = useProductDetail(slug!);
   const queryClient = useQueryClient();
   const showToast = useUiStore((s) => s.showToast);
+  const { t, i18n } = useTranslation();
 
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -53,6 +56,8 @@ export default function ProductDetailPage() {
 
   const isOOS = product.stock_quantity === 0;
   const isLowStock = !isOOS && product.stock_quantity <= LOW_STOCK_THRESHOLD;
+  const displayName = getLocalized(product, i18n.language);
+  const displayDescription = getLocalized(product, i18n.language, 'description');
 
   async function handleAddToCart() {
     setIsAddingToCart(true);
@@ -71,22 +76,19 @@ export default function ProductDetailPage() {
     <div className="bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-5">
         <nav className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
-          <Link to={APP_ROUTES.HOME} className="hover:text-gray-900 transition-colors">Home</Link>
+          <Link to={APP_ROUTES.HOME} className="hover:text-gray-900 transition-colors">{t('product.home')}</Link>
           <span>/</span>
-          <Link to={APP_ROUTES.CATALOG} className="hover:text-gray-900 transition-colors">Catalog</Link>
+          <Link to={APP_ROUTES.CATALOG} className="hover:text-gray-900 transition-colors">{t('product.catalog')}</Link>
           {product.category && (
             <>
               <span>/</span>
-              <Link
-                to={`${APP_ROUTES.CATALOG}?category=${product.category.slug}`}
-                className="hover:text-gray-900 transition-colors"
-              >
-                {product.category.name}
+              <Link to={`${APP_ROUTES.CATALOG}?category=${product.category.slug}`} className="hover:text-gray-900 transition-colors">
+                {getLocalized(product.category, i18n.language)}
               </Link>
             </>
           )}
           <span>/</span>
-          <span className="text-gray-900 truncate max-w-[200px]">{product.name}</span>
+          <span className="text-gray-900 truncate max-w-[200px]">{displayName}</span>
         </nav>
       </div>
 
@@ -94,25 +96,25 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           <ImageGallery
             images={product.images}
-            name={product.name}
-            tag={isLowStock ? 'Low Stock' : undefined}
+            name={displayName}
+            tag={isLowStock ? t('product.lowStock') : undefined}
           />
 
           <div className="flex flex-col gap-6 pt-2">
             <div className="flex items-center justify-between">
               {product.category && (
                 <span className="text-xs tracking-widest uppercase text-primary-dark font-medium">
-                  {product.category.name}
+                  {getLocalized(product.category, i18n.language)}
                 </span>
               )}
               {isOOS && (
-                <span className="text-xs font-medium text-red-500 uppercase tracking-wide">Out of Stock</span>
+                <span className="text-xs font-medium text-red-500 uppercase tracking-wide">{t('product.outOfStock')}</span>
               )}
             </div>
 
             <div>
               <h1 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
-                {product.name}
+                {displayName}
               </h1>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-semibold text-primary-dark">
@@ -130,15 +132,15 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <span className="text-sm text-gray-500">
-                  Only {product.stock_quantity} left in stock
+                  {t('product.onlyLeft', { count: product.stock_quantity })}
                 </span>
               </div>
             )}
 
-            {product.description && (
+            {displayDescription && (
               <div
                 className="text-sm text-gray-600 leading-relaxed border-t border-border pt-5 prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.description }}
+                dangerouslySetInnerHTML={{ __html: displayDescription }}
               />
             )}
 
@@ -147,17 +149,15 @@ export default function ProductDetailPage() {
             {product.variants.length > 0 && (
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="variant-select" className="text-sm font-medium text-gray-700">
-                  Option
+                  {t('product.option')}
                 </label>
                 <select
                   id="variant-select"
                   value={selectedVariantId ?? ''}
-                  onChange={(e) =>
-                    setSelectedVariantId(e.target.value ? Number(e.target.value) : null)
-                  }
+                  onChange={(e) => setSelectedVariantId(e.target.value ? Number(e.target.value) : null)}
                   className="border border-border rounded-[6px] px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                 >
-                  <option value="">Select an option</option>
+                  <option value="">{t('product.selectOption')}</option>
                   {product.variants.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.name}: {v.value}
@@ -170,38 +170,17 @@ export default function ProductDetailPage() {
             <div className="flex flex-col gap-4 pt-2">
               {!isOOS && (
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-gray-900">Qty</span>
+                  <span className="text-sm font-medium text-gray-900">{t('product.qty')}</span>
                   <div className="flex items-center border border-border rounded-[6px] overflow-hidden">
-                    <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      disabled={quantity <= 1}
-                      className="w-10 h-10 flex items-center justify-center text-gray-900 hover:bg-stone-50 transition-colors text-lg disabled:opacity-40"
-                    >
-                      −
-                    </button>
-                    <span className="w-10 text-center text-sm font-medium text-gray-900">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => setQuantity((q) => Math.min(product.stock_quantity, q + 1))}
-                      disabled={quantity >= product.stock_quantity}
-                      className="w-10 h-10 flex items-center justify-center text-gray-900 hover:bg-stone-50 transition-colors text-lg disabled:opacity-40"
-                    >
-                      +
-                    </button>
+                    <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-10 h-10 flex items-center justify-center text-gray-900 hover:bg-stone-50 transition-colors text-lg disabled:opacity-40">−</button>
+                    <span className="w-10 text-center text-sm font-medium text-gray-900">{quantity}</span>
+                    <button onClick={() => setQuantity((q) => Math.min(product.stock_quantity, q + 1))} disabled={quantity >= product.stock_quantity} className="w-10 h-10 flex items-center justify-center text-gray-900 hover:bg-stone-50 transition-colors text-lg disabled:opacity-40">+</button>
                   </div>
                 </div>
               )}
 
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full"
-                disabled={isOOS || isAddingToCart}
-                isLoading={isAddingToCart}
-                onClick={handleAddToCart}
-              >
-                {isOOS ? 'Out of Stock' : 'Add to Cart'}
+              <Button variant="primary" size="lg" className="w-full" disabled={isOOS || isAddingToCart} isLoading={isAddingToCart} onClick={handleAddToCart}>
+                {isOOS ? t('product.outOfStock') : t('product.addToCart')}
               </Button>
             </div>
           </div>

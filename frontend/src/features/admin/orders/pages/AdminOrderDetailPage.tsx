@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { adminOrdersApi } from '../api/adminOrdersApi';
 import { APP_ROUTES } from '@/constants/routes';
 import { useUiStore } from '@/store/uiStore';
@@ -31,6 +32,7 @@ const SELECT_CLASSES =
 export default function AdminOrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const showToast = useUiStore((s) => s.showToast);
 
@@ -61,21 +63,21 @@ export default function AdminOrderDetailPage() {
   const mutation = useMutation({
     mutationFn: () => adminOrdersApi.updateStatus(Number(id), editState),
     onSuccess: () => {
-      showToast('Order updated');
+      showToast(t('admin.orderUpdated'));
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       queryClient.invalidateQueries({ queryKey: ['admin-order', id] });
     },
     onError: () => {
-      showToast('Failed to update order', 'error');
+      showToast(t('admin.failedUpdateOrder'), 'error');
     },
   });
 
   if (isLoading) {
-    return <div className="p-8 text-gray-500">Loading…</div>;
+    return <div className="p-8 text-gray-500">{t('admin.loading')}</div>;
   }
 
   if (!order) {
-    return <div className="p-8 text-gray-500">Order not found.</div>;
+    return <div className="p-8 text-gray-500">{t('admin.orderNotFound')}</div>;
   }
 
   return (
@@ -85,7 +87,7 @@ export default function AdminOrderDetailPage() {
         to={APP_ROUTES.ADMIN.ORDERS + backSearch}
         className="text-sm text-primary-dark hover:underline mb-6 inline-block"
       >
-        ← Back to Orders
+        {t('admin.backToOrders')}
       </Link>
 
       <div className="flex items-center gap-3 mb-6">
@@ -99,22 +101,22 @@ export default function AdminOrderDetailPage() {
       <div className="space-y-6">
         {/* Section 1 — Customer Info */}
         <section className="bg-surface border border-border rounded-md p-5">
-          <h2 className="font-heading text-lg text-gray-900 mb-3">Customer</h2>
+          <h2 className="font-heading text-lg text-gray-900 mb-3">{t('admin.customer')}</h2>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 text-sm">
             <div>
-              <dt className="text-gray-500">Name</dt>
+              <dt className="text-gray-500">{t('admin.nameLabel')}</dt>
               <dd className="text-gray-900 font-medium">{order.customer_name}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Email</dt>
+              <dt className="text-gray-500">{t('admin.emailLabel')}</dt>
               <dd className="text-gray-900">{order.customer_email}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Phone</dt>
+              <dt className="text-gray-500">{t('admin.phoneLabel')}</dt>
               <dd className="text-gray-900">{order.customer_phone ?? '—'}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">Shipping Address</dt>
+              <dt className="text-gray-500">{t('admin.shippingAddress')}</dt>
               <dd className="text-gray-900">
                 <span>{order.shipping_address.line1}</span>
                 {order.shipping_address.line2 && (
@@ -132,16 +134,16 @@ export default function AdminOrderDetailPage() {
         {/* Section 2 — Items */}
         <section className="bg-white border border-border rounded-md overflow-hidden shadow-sm">
           <h2 className="font-heading text-lg text-gray-900 px-5 py-3 border-b border-border">
-            Items
+            {t('admin.itemsHeading')}
           </h2>
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
-                <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Qty</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.nameLabel')}</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.sku')}</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">{t('admin.unitPrice')}</th>
+                <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">{t('admin.qty')}</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">{t('admin.subtotal')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -162,7 +164,7 @@ export default function AdminOrderDetailPage() {
             <tfoot className="border-t border-border bg-gray-50">
               <tr>
                 <td colSpan={4} className="px-4 py-3 text-right font-semibold text-gray-900 text-sm">
-                  Total
+                  {t('admin.total')}
                 </td>
                 <td className="px-4 py-3 text-right font-semibold text-primary-dark">
                   {formatPrice(order.total_amount)}
@@ -174,10 +176,10 @@ export default function AdminOrderDetailPage() {
 
         {/* Section 3 — Edit */}
         <section className="bg-surface border border-border rounded-md p-5">
-          <h2 className="font-heading text-lg text-gray-900 mb-4">Update Order</h2>
+          <h2 className="font-heading text-lg text-gray-900 mb-4">{t('admin.updateOrder')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">{t('admin.statusLabel')}</label>
               <select
                 className={SELECT_CLASSES}
                 value={editState.status}
@@ -191,7 +193,7 @@ export default function AdminOrderDetailPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Payment Status</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">{t('admin.paymentStatus')}</label>
               <select
                 className={SELECT_CLASSES}
                 value={editState.payment_status}
@@ -206,13 +208,13 @@ export default function AdminOrderDetailPage() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-xs font-medium text-gray-500 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1">{t('admin.notesLabel')}</label>
             <textarea
               className={SELECT_CLASSES}
               rows={3}
               value={editState.notes}
               onChange={(e) => setEditState((s) => ({ ...s, notes: e.target.value }))}
-              placeholder="Internal notes…"
+              placeholder={t('admin.internalNotes')}
             />
           </div>
           <Button
@@ -220,7 +222,7 @@ export default function AdminOrderDetailPage() {
             isLoading={mutation.isPending}
             onClick={() => mutation.mutate()}
           >
-            Save Changes
+            {t('admin.saveChanges')}
           </Button>
         </section>
       </div>

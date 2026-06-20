@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { getLocalized } from '@/hooks/useLocalized';
 import { APP_ROUTES } from '@/constants/routes';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/utils/formatters';
@@ -10,14 +12,15 @@ type Props = {
 
 export default function RelatedProducts({ products }: Props) {
   const { addItem } = useCart();
+  const { t, i18n } = useTranslation();
 
   if (products.length === 0) return null;
 
   return (
     <div className="mt-24">
       <div className="mb-10">
-        <p className="text-xs tracking-[0.18em] uppercase text-primary-dark mb-2">You may also like</p>
-        <h2 className="text-3xl font-heading font-bold text-gray-900">Related Pieces</h2>
+        <p className="text-xs tracking-[0.18em] uppercase text-primary-dark mb-2">{t('product.youMayAlsoLike')}</p>
+        <h2 className="text-3xl font-heading font-bold text-gray-900">{t('product.relatedPieces')}</h2>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {products.map((p) => (
@@ -25,8 +28,8 @@ export default function RelatedProducts({ products }: Props) {
             <div className="relative overflow-hidden aspect-[4/5] bg-stone-100 rounded-[6px] mb-3">
               {p.primary_image ? (
                 <img
-                  src={`${import.meta.env.VITE_API_BASE_URL}${p.primary_image.url}`}
-                  alt={p.primary_image.alt_text ?? p.name}
+                  src={`${import.meta.env.VITE_API_BASE_URL}${p.primary_image.thumbnail_url ?? p.primary_image.url}`}
+                  alt={p.primary_image.alt_text ?? getLocalized(p, i18n.language)}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               ) : (
@@ -40,12 +43,12 @@ export default function RelatedProducts({ products }: Props) {
                     onClick={(e) => { e.preventDefault(); addItem(p.id, 1); }}
                     className="w-full py-3 bg-primary text-white text-xs tracking-wide hover:bg-primary-dark transition-colors"
                   >
-                    Add to Cart
+                    {t('product.addToCart')}
                   </button>
                 </div>
               )}
             </div>
-            <p className="font-medium text-gray-900 text-sm">{p.name}</p>
+            <p className="font-medium text-gray-900 text-sm">{getLocalized(p, i18n.language)}</p>
             <p className="text-sm text-primary-dark font-medium mt-0.5">{formatPrice(p.price)}</p>
           </Link>
         ))}

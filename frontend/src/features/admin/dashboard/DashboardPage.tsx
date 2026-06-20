@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { statsApi, type Stats } from './api/statsApi';
+import { formatPrice } from '@/utils/formatters';
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
@@ -11,25 +13,26 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const { data, isLoading, isError } = useQuery<Stats>({
     queryKey: ['admin-stats'],
     queryFn: () => statsApi.getStats().then((r) => r.data),
     refetchInterval: 30_000,
   });
 
-  if (isLoading) return <div className="p-8 text-gray-500">Loading…</div>;
-  if (isError || !data) return <div className="p-8 text-red-500">Failed to load stats.</div>;
+  if (isLoading) return <div className="p-8 text-gray-500">{t('admin.loading')}</div>;
+  if (isError || !data) return <div className="p-8 text-red-500">{t('admin.failedStats')}</div>;
 
   const cards = [
-    { label: 'Total Products', value: data.total_products },
-    { label: 'Active Orders', value: data.active_orders },
-    { label: 'Low Stock Items', value: data.low_stock_count },
-    { label: 'Total Revenue', value: `$${Number(data.total_revenue).toFixed(2)}` },
+    { label: t('admin.totalProducts'), value: data.total_products },
+    { label: t('admin.activeOrders'), value: data.active_orders },
+    { label: t('admin.lowStockItems'), value: data.low_stock_count },
+    { label: t('admin.totalRevenue'), value: formatPrice(Number(data.total_revenue)) },
   ];
 
   return (
     <div className="p-8">
-      <h1 className="text-xl font-heading text-gray-900 mb-6">Dashboard</h1>
+      <h1 className="text-xl font-heading text-gray-900 mb-6">{t('admin.dashboard')}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         {cards.map((c) => (
           <StatCard key={c.label} label={c.label} value={c.value} />

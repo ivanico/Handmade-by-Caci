@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useCart } from '@/hooks/useCart';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 
 export default function ProductCardActions({ stockQuantity, productId, onAddToCart }: Props) {
   const { addItem, isAdding } = useCart();
+  const { t } = useTranslation();
 
   if (stockQuantity === 0) return null;
 
@@ -23,7 +25,7 @@ export default function ProductCardActions({ stockQuantity, productId, onAddToCa
         }}
         className="w-full py-3.5 bg-primary text-primary-foreground text-sm tracking-wide hover:bg-accent hover:text-foreground transition-colors disabled:opacity-50"
       >
-        {isAdding ? 'Adding…' : 'Add to Cart'}
+        {isAdding ? t('product.adding') : t('product.addToCart')}
       </button>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuthStore } from '@/store/authStore';
 import { catalogApi } from '@/features/catalog/api/catalogApi';
@@ -18,12 +19,29 @@ const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
   'block py-2 text-base font-medium transition-colors ' +
   (isActive ? 'text-primary-dark' : 'text-gray-500 hover:text-gray-900');
 
+function LangToggle({ className = '' }: { className?: string }) {
+  const { i18n } = useTranslation();
+  const other = i18n.language === 'mk' ? 'en' : 'mk';
+  return (
+    <button
+      onClick={() => i18n.changeLanguage(other)}
+      className={`text-xs font-semibold tracking-widest uppercase px-2 py-1 rounded border border-current opacity-60 hover:opacity-100 transition-opacity ${className}`}
+    >
+      {other.toUpperCase()}
+    </button>
+  );
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+
+  const getLocalized = (item: { name: string; name_mk?: string | null }) =>
+    (i18n.language === 'mk' && item.name_mk) ? item.name_mk : item.name;
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -46,12 +64,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/*
-        Outer wrapper: fixed full-width, pointer-events-none so the transparent
-        area beside the pill doesn't eat page clicks.
-        AnimatePresence is a SIBLING (not child) of motion.div — framer-motion's
-        transform creates a stacking context that breaks nested fixed positioning.
-      */}
       <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
         <motion.div
           className="w-full flex items-center pointer-events-auto"
@@ -86,7 +98,7 @@ export default function Navbar() {
           }
           transition={{ type: 'spring', stiffness: 120, damping: 20, mass: 1 }}
         >
-          {/* Left — flex-1 anchors logo to the left */}
+          {/* Left */}
           <div className="flex-1 flex items-center">
             <Link to="/" className="shrink-0">
               <img
@@ -97,31 +109,41 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Center — naturally centered by the two flex-1 flanks */}
-          <nav className="hidden md:flex items-center gap-5 ">
+          {/* Center */}
+          <nav className="hidden md:flex items-center gap-5">
             {activeCategories.map((cat) => (
               <NavLink
                 key={cat.id}
                 to={`/catalog?category=${cat.slug}`}
                 className={navLinkClass}
               >
-                {cat.name}
+                {getLocalized(cat)}
               </NavLink>
             ))}
           </nav>
 
-          {/* Right — flex-1 justify-end anchors cart/user to the right */}
+          {/* Right */}
           <div className="flex-1 flex items-center justify-end gap-2">
             <NavbarCartIcon />
 
             <div className="hidden md:flex items-center gap-3 ml-1">
+              <LangToggle />
               {user ? (
                 <>
-                  <span className="text-sm text-gray-600 max-w-[120px] truncate">
-                    {user.full_name || user.email}
-                  </span>
+                  {user.role === 'admin' ? (
+                    <Link
+                      to="/admin"
+                      className="text-sm font-medium text-primary-dark hover:text-primary transition-colors max-w-[120px] truncate"
+                    >
+                      {t('nav.admin')}
+                    </Link>
+                  ) : (
+                    <span className="text-sm text-gray-600 max-w-[120px] truncate">
+                      {user.full_name || user.email}
+                    </span>
+                  )}
                   <Button variant="ghost" size="sm" onClick={handleLogout}>
-                    Logout
+                    {t('nav.logout')}
                   </Button>
                 </>
               ) : (
@@ -130,13 +152,13 @@ export default function Navbar() {
                     to="/login"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
-                    Login
+                    {t('nav.login')}
                   </Link>
                   <Link
                     to="/register"
                     className="rounded-md active:scale-95 transition-all duration-150 font-medium inline-flex items-center justify-center px-3 py-1.5 text-sm bg-primary hover:bg-primary-dark text-white"
                   >
-                    Register
+                    {t('nav.register')}
                   </Link>
                 </>
               )}
@@ -144,17 +166,10 @@ export default function Navbar() {
 
             <button
               onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
+              aria-label={t('nav.menu')}
               className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -162,7 +177,6 @@ export default function Navbar() {
         </motion.div>
       </div>
 
-      {/* Mobile drawer — sibling of the fixed wrapper, not a child of motion.div */}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -181,20 +195,13 @@ export default function Navbar() {
               transition={{ type: 'spring', stiffness: 400, damping: 40 }}
             >
               <div className="flex items-center justify-between px-4 h-16 border-b border-border">
-                <span className="font-heading text-gray-900">Menu</span>
+                <span className="font-heading text-gray-900">{t('nav.menu')}</span>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  aria-label="Close menu"
+                  aria-label={t('nav.close')}
                   className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -208,26 +215,34 @@ export default function Navbar() {
                     className={mobileLinkClass}
                     onClick={() => setMenuOpen(false)}
                   >
-                    {cat.name}
+                    {getLocalized(cat)}
                   </NavLink>
                 ))}
               </nav>
 
               <div className="px-4 py-4 border-t border-border space-y-2">
+                <LangToggle className="mb-2" />
                 {user ? (
                   <>
-                    <p className="text-sm text-gray-500 truncate">
-                      {user.full_name || user.email}
-                    </p>
+                    {user.role === 'admin' ? (
+                      <Link
+                        to="/admin"
+                        onClick={() => setMenuOpen(false)}
+                        className="block text-sm font-medium text-primary-dark hover:text-primary transition-colors py-1"
+                      >
+                        {t('nav.admin')}
+                      </Link>
+                    ) : (
+                      <p className="text-sm text-gray-500 truncate">
+                        {user.full_name || user.email}
+                      </p>
+                    )}
                     <Button
                       variant="ghost"
                       className="w-full justify-start"
-                      onClick={() => {
-                        handleLogout();
-                        setMenuOpen(false);
-                      }}
+                      onClick={() => { handleLogout(); setMenuOpen(false); }}
                     >
-                      Logout
+                      {t('nav.logout')}
                     </Button>
                   </>
                 ) : (
@@ -237,14 +252,14 @@ export default function Navbar() {
                       onClick={() => setMenuOpen(false)}
                       className="block text-sm text-gray-700 hover:text-gray-900 transition-colors py-1"
                     >
-                      Login
+                      {t('nav.login')}
                     </Link>
                     <Link
                       to="/register"
                       onClick={() => setMenuOpen(false)}
                       className="block text-center rounded-md active:scale-95 transition-all duration-150 font-medium px-4 py-2 text-sm bg-primary hover:bg-primary-dark text-white"
                     >
-                      Register
+                      {t('nav.register')}
                     </Link>
                   </>
                 )}

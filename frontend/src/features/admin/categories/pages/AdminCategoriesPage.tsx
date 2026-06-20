@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { adminCategoriesApi, type Category } from '../api/adminCategoriesApi';
 import CategoryModal from '../components/CategoryModal';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 
 export default function AdminCategoriesPage() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [editCategory, setEditCategory] = useState<Category | null>(null);
@@ -37,7 +39,7 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (cat: Category) => {
-    if (!window.confirm(`Delete "${cat.name}"?`)) return;
+    if (!window.confirm(t('admin.deleteCategoryConfirm', { name: cat.name }))) return;
     setDeleteError('');
     try {
       await adminCategoriesApi.delete(cat.id);
@@ -51,9 +53,9 @@ export default function AdminCategoriesPage() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-heading text-gray-900">Categories</h1>
+        <h1 className="text-xl font-heading text-gray-900">{t('admin.categories')}</h1>
         <Button variant="primary" size="sm" onClick={openCreate}>
-          + New Category
+          {t('admin.newCategory')}
         </Button>
       </div>
 
@@ -62,11 +64,11 @@ export default function AdminCategoriesPage() {
       )}
 
       {isLoading && (
-        <p className="text-gray-400 mt-6">Loading…</p>
+        <p className="text-gray-400 mt-6">{t('admin.loading')}</p>
       )}
 
       {!isLoading && categories.length === 0 && (
-        <p className="text-gray-400 mt-6">No categories found.</p>
+        <p className="text-gray-400 mt-6">{t('admin.noCategories')}</p>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
@@ -91,15 +93,15 @@ export default function AdminCategoriesPage() {
             <p className="text-sm font-medium text-gray-900 text-center">{cat.name}</p>
 
             <Badge variant="muted">
-              {cat.product_count} {cat.product_count === 1 ? 'product' : 'products'}
+              {cat.product_count} {cat.product_count === 1 ? t('admin.products_one') : t('admin.products_other')}
             </Badge>
 
             <div className="flex gap-1 mt-1">
               <Button variant="ghost" size="sm" onClick={() => openEdit(cat)}>
-                Edit
+                {t('admin.edit')}
               </Button>
               <Button variant="danger" size="sm" onClick={() => handleDelete(cat)}>
-                Delete
+                {t('admin.delete')}
               </Button>
             </div>
           </div>

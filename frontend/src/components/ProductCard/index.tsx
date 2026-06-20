@@ -1,5 +1,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { getLocalized } from '@/hooks/useLocalized';
 import type { ImageRef, ProductListItem } from '@/types/common';
 import { APP_ROUTES } from '@/constants/routes';
 import ProductCardActions from './ProductCard.Actions';
@@ -17,6 +19,8 @@ type Props = {
 export default function ProductCard({ product, onAddToCart, images }: Props) {
   const hoverImage = images && images.length > 1 ? images[1] : undefined;
   const isOutOfStock = product.stock_quantity === 0;
+  const { t, i18n } = useTranslation();
+  const displayName = getLocalized(product, i18n.language);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -47,13 +51,13 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
         <ProductCardImage
           primaryImage={product.primary_image}
           hoverImage={hoverImage}
-          name={product.name}
+          name={displayName}
         />
 
         {isOutOfStock && (
           <div className="absolute inset-0 bg-white/60 flex items-end">
             <span className="w-full text-center py-2 text-xs font-medium text-gray-500 uppercase tracking-wide bg-white/80 backdrop-blur-sm">
-              Out of Stock
+              {t('product.outOfStock')}
             </span>
           </div>
         )}
@@ -67,10 +71,10 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
 
       <div className="px-3 py-2 bg-white">
         <ProductCardInfo
-          name={product.name}
+          name={displayName}
           price={product.price}
           compare_at_price={product.compare_at_price}
-          category={product.category?.name}
+          category={product.category ? getLocalized(product.category, i18n.language) : undefined}
         />
       </div>
     </MotionLink>

@@ -3,8 +3,10 @@ import client from '@/api/client';
 export interface Category {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
   description: string | null;
+  description_mk?: string | null;
   image_url: string | null;
   parent_id: number | null;
   is_active: boolean;
@@ -13,12 +15,16 @@ export interface Category {
 
 export interface CreateCategoryData {
   name: string;
+  name_mk?: string | null;
   description: string | null;
+  description_mk?: string | null;
 }
 
 export interface UpdateCategoryData {
   name?: string;
+  name_mk?: string | null;
   description?: string | null;
+  description_mk?: string | null;
   is_active?: boolean;
 }
 

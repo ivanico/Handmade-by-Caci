@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { APP_ROUTES } from '@/constants/routes';
 import { checkoutApi } from '@/features/checkout/api/checkoutApi';
 import { formatPrice } from '@/utils/formatters';
@@ -9,6 +10,7 @@ import Spinner from '@/components/ui/Spinner';
 export default function OrderConfirmationPage() {
   const { orderNumber } = useParams<{ orderNumber: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const email = sessionStorage.getItem('order_email') ?? '';
 
   const { data: order, isLoading } = useQuery({
@@ -33,9 +35,9 @@ export default function OrderConfirmationPage() {
         <span className="text-green-600 text-3xl font-bold">✓</span>
       </div>
 
-      <h1 className="font-heading text-3xl text-gray-900 mb-2">Order Placed!</h1>
+      <h1 className="font-heading text-3xl text-gray-900 mb-2">{t('orderConfirmation.heading')}</h1>
       <p className="text-gray-500 mb-8">
-        Order number: <strong className="text-gray-900">{orderNumber}</strong>
+        {t('orderConfirmation.orderNumber')} <strong className="text-gray-900">{orderNumber}</strong>
       </p>
 
       {order && (
@@ -55,13 +57,13 @@ export default function OrderConfirmationPage() {
 
           {/* Total */}
           <div className="border-t border-border pt-3 flex justify-between font-semibold text-sm">
-            <span>Total</span>
+            <span>{t('orderConfirmation.total')}</span>
             <span className="text-primary-dark">{formatPrice(order.total_amount)}</span>
           </div>
 
           {/* Shipping address */}
           <div className="border-t border-border pt-3 text-sm text-gray-600 space-y-0.5">
-            <p className="font-medium text-gray-900 mb-1">Shipping to</p>
+            <p className="font-medium text-gray-900 mb-1">{t('orderConfirmation.shippingTo')}</p>
             <p>{order.shipping_address.line1}</p>
             {order.shipping_address.line2 && <p>{order.shipping_address.line2}</p>}
             <p>
@@ -73,7 +75,7 @@ export default function OrderConfirmationPage() {
       )}
 
       <Button variant="secondary" onClick={() => navigate(APP_ROUTES.CATALOG)}>
-        Continue Shopping
+        {t('orderConfirmation.continueShopping')}
       </Button>
     </div>
   );

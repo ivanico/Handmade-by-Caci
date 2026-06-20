@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '@/store/authStore';
 import Button from '@/components/ui/Button';
@@ -7,6 +8,7 @@ import Input from '@/components/ui/Input';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +26,7 @@ export default function LoginPage() {
       setAuth(user, tokenData.access_token);
       navigate(user.role === 'admin' ? '/admin' : '/');
     } catch {
-      setError('Invalid email or password');
+      setError(t('auth.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -33,17 +35,17 @@ export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto mt-20 px-4">
       <div className="bg-white border border-border rounded-md shadow-sm p-8">
-        <h1 className="font-heading text-2xl text-gray-900 mb-6">Sign in</h1>
+        <h1 className="font-heading text-2xl text-gray-900 mb-6">{t('auth.signIn')}</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Email"
+            label={t('auth.email')}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
           <Input
-            label="Password"
+            label={t('auth.password')}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -51,13 +53,13 @@ export default function LoginPage() {
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button type="submit" variant="primary" isLoading={loading} className="w-full">
-            Sign in
+            {t('auth.signIn')}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          {t('auth.noAccount')}{' '}
           <Link to="/register" className="text-primary-dark hover:underline">
-            Create account
+            {t('auth.createAccount')}
           </Link>
         </p>
       </div>

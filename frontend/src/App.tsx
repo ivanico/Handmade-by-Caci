@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthProvider from '@/routes/AuthProvider';
@@ -27,6 +34,7 @@ export default function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <ScrollToTop />
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />

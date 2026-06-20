@@ -29,7 +29,9 @@ async def list_products(
         q = q.where(
             or_(
                 Product.name.ilike(f"%{search}%"),
+                Product.name_mk.ilike(f"%{search}%"),
                 Product.description.ilike(f"%{search}%"),
+                Product.description_mk.ilike(f"%{search}%"),
             )
         )
     if featured:
@@ -99,10 +101,12 @@ async def add_image(
     alt_text: str | None,
     sort_order: int,
     is_primary: bool,
+    thumbnail_url: str | None = None,
 ) -> ProductImage:
     image = ProductImage(
         product_id=product_id,
         url=url,
+        thumbnail_url=thumbnail_url,
         alt_text=alt_text,
         sort_order=sort_order,
         is_primary=is_primary,

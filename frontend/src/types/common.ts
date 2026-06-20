@@ -9,8 +9,10 @@ export interface User {
 export interface Category {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
   description: string | null;
+  description_mk?: string | null;
   image_url: string | null;
   is_active: boolean;
 }
@@ -34,6 +36,7 @@ export interface Cart {
 export interface ImageRef {
   id: number;
   url: string;
+  thumbnail_url?: string | null;
   alt_text: string | null;
   sort_order: number;
   is_primary: boolean;
@@ -42,12 +45,14 @@ export interface ImageRef {
 export interface CategoryRef {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
 }
 
 export interface ProductListItem {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
   price: string;
   compare_at_price: string | null;
@@ -75,8 +80,10 @@ export interface ProductVariant {
 export interface ProductDetail {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
   description: string | null;
+  description_mk?: string | null;
   price: string;
   compare_at_price: string | null;
   sku: string;

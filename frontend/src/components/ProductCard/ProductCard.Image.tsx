@@ -15,10 +15,10 @@ export default function ProductCardImage({ primaryImage, hoverImage, name }: Pro
     );
   }
 
-  const src = `${import.meta.env.VITE_API_BASE_URL}${primaryImage.url}`;
+  const src = `${import.meta.env.VITE_API_BASE_URL}${primaryImage.thumbnail_url ?? primaryImage.url}`;
 
   if (hoverImage) {
-    const hoverSrc = `${import.meta.env.VITE_API_BASE_URL}${hoverImage.url}`;
+    const hoverSrc = `${import.meta.env.VITE_API_BASE_URL}${hoverImage.thumbnail_url ?? hoverImage.url}`;
     return (
       <>
         <img

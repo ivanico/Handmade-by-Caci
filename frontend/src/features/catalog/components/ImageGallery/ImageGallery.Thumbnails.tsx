@@ -21,7 +21,7 @@ export default function ImageGalleryThumbnails({ images, activeIndex, onSelect }
           aria-label={img.alt_text ?? `Image ${i + 1}`}
         >
           <img
-            src={`${import.meta.env.VITE_API_BASE_URL}${img.url}`}
+            src={`${import.meta.env.VITE_API_BASE_URL}${img.thumbnail_url ?? img.url}`}
             alt={img.alt_text ?? ''}
             className="w-full h-full object-cover"
           />

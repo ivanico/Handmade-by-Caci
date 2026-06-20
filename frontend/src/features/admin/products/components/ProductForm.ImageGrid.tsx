@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ProductImage } from '../api/adminProductsApi';
 
 type Props = {
@@ -15,6 +16,7 @@ export default function ProductFormImageGrid({
   onDelete,
   onReorder,
 }: Props) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -54,19 +56,19 @@ export default function ProductFormImageGrid({
         {images.map((img, idx) => (
           <div key={img.id} className="relative group" style={{ width: 120, height: 120 }}>
             <img
-              src={`${import.meta.env.VITE_API_BASE_URL}${img.url}`}
+              src={`${import.meta.env.VITE_API_BASE_URL}${img.thumbnail_url ?? img.url}`}
               alt={img.alt_text ?? ''}
               className="w-full h-full object-cover rounded border border-gray-200"
             />
             {img.is_primary && (
               <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1 rounded">
-                primary
+                {t('admin.primary')}
               </span>
             )}
             <button
               type="button"
               onClick={() => handle(() => onDelete(img.id))}
-              className="absolute top-1 right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full leading-none opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-1 right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full leading-none flex items-center justify-center shadow"
             >
               ×
             </button>
@@ -106,10 +108,10 @@ export default function ProductFormImageGrid({
         disabled={loading || images.length >= 8}
         className="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
       >
-        {loading ? 'Uploading…' : 'Add images'}
+        {loading ? t('admin.uploading') : t('admin.addImages')}
       </button>
       {images.length >= 8 && (
-        <p className="text-xs text-gray-400 mt-1">Maximum 8 images reached.</p>
+        <p className="text-xs text-gray-400 mt-1">{t('admin.maxImages')}</p>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAdminOrders } from '@/hooks/useAdminOrders';
 import { APP_ROUTES } from '@/constants/routes';
 import AdminOrderTable from '../components/AdminOrderTable';
@@ -8,6 +9,7 @@ import AdminOrderTablePagination from '../components/AdminOrderTable/AdminOrderT
 export default function AdminOrdersPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { data, isLoading, filters, setSearch, setStatus, toggleSort, setPage } = useAdminOrders();
 
   function handleRowClick(id: number) {
@@ -18,7 +20,7 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="p-4 sm:p-8">
-      <h1 className="text-xl font-heading text-gray-900 mb-6">Orders</h1>
+      <h1 className="text-xl font-heading text-gray-900 mb-6">{t('admin.orders')}</h1>
 
       <AdminOrderTableFilters
         filters={filters}

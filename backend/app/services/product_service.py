@@ -160,12 +160,13 @@ async def add_images(
         raise ValueError(f"Product can have at most 8 images (currently has {existing_count})")
     saved = []
     for i, (data, ext) in enumerate(file_data):
-        url = image_service.save_product_image(product_id, data, ext)
+        url, thumbnail_url = image_service.save_product_image(product_id, data, ext)
         is_primary = existing_count == 0 and i == 0
         img = await product_repository.add_image(
             db,
             product_id=product_id,
             url=url,
+            thumbnail_url=thumbnail_url,
             alt_text=None,
             sort_order=existing_count + i,
             is_primary=is_primary,
@@ -178,7 +179,7 @@ async def delete_image(db: AsyncSession, product_id: int, image_id: int) -> None
     image = await product_repository.get_image(db, image_id)
     if not image or image.product_id != product_id:
         raise ValueError("Image not found")
-    image_service.delete_product_image_file(image.url)
+    image_service.delete_product_image_file(image.url, image.thumbnail_url)
     await product_repository.delete_image(db, image)
 
 

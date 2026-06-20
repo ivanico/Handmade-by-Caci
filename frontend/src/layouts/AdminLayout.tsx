@@ -1,22 +1,24 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuthStore } from '@/store/authStore';
 import Button from '@/components/ui/Button';
 import ToastContainer from '@/components/common/ToastContainer';
 
-const NAV_ITEMS = [
-  { to: '/admin', label: 'Dashboard', end: true },
-  { to: '/admin/products', label: 'Products', end: false },
-  { to: '/admin/categories', label: 'Categories', end: false },
-  { to: '/admin/orders', label: 'Orders', end: false },
-];
-
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+
+  const NAV_ITEMS = [
+    { to: '/admin', label: t('admin.dashboard'), end: true },
+    { to: '/admin/products', label: t('admin.products'), end: false },
+    { to: '/admin/categories', label: t('admin.categories'), end: false },
+    { to: '/admin/orders', label: t('admin.orders'), end: false },
+  ];
 
   const handleLogout = async () => {
     await authApi.logout().catch(() => {});
@@ -42,11 +44,13 @@ export default function AdminLayout() {
         }`}
       >
         <div className="px-6 py-5 border-b border-border">
-          <img
-            src="/Handmade-by-Caci-logo.png"
-            alt="Handmade by Caci"
-            className="h-14 w-auto"
-          />
+          <Link to="/">
+            <img
+              src="/Handmade-by-Caci-logo.png"
+              alt="Handmade by Caci"
+              className="h-14 w-auto"
+            />
+          </Link>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -73,7 +77,7 @@ export default function AdminLayout() {
             {user?.full_name || user?.email}
           </p>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
-            Logout
+            {t('admin.logout')}
           </Button>
         </div>
       </aside>
@@ -98,7 +102,7 @@ export default function AdminLayout() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="ml-3 font-heading text-gray-900 text-sm">Admin</span>
+          <span className="ml-3 font-heading text-gray-900 text-sm">{t('admin.admin')}</span>
         </div>
         <Outlet />
       </main>

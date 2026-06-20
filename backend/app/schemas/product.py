@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class CategoryRef(BaseModel):
     id: int
     name: str
+    name_mk: str | None = None
     slug: str
 
     model_config = {"from_attributes": True}
@@ -14,6 +15,7 @@ class CategoryRef(BaseModel):
 class ImageRef(BaseModel):
     id: int
     url: str
+    thumbnail_url: str | None = None
     alt_text: str | None = None
     sort_order: int
     is_primary: bool
@@ -34,6 +36,7 @@ class VariantOut(BaseModel):
 class ProductListItem(BaseModel):
     id: int
     name: str
+    name_mk: str | None = None
     slug: str
     price: Decimal
     compare_at_price: Decimal | None = None
@@ -46,8 +49,10 @@ class ProductListItem(BaseModel):
 class ProductOut(BaseModel):
     id: int
     name: str
+    name_mk: str | None = None
     slug: str
     description: str | None = None
+    description_mk: str | None = None
     price: Decimal
     compare_at_price: Decimal | None = None
     sku: str
@@ -62,8 +67,10 @@ class ProductOut(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
+    name_mk: str | None = None
     category_id: int | None = None
     description: str | None = None
+    description_mk: str | None = None
     price: Decimal
     compare_at_price: Decimal | None = None
     sku: str
@@ -74,8 +81,10 @@ class ProductCreate(BaseModel):
 
 class ProductUpdate(BaseModel):
     name: str | None = None
+    name_mk: str | None = None
     category_id: int | None = None
     description: str | None = None
+    description_mk: str | None = None
     price: Decimal | None = None
     compare_at_price: Decimal | None = None
     sku: str | None = None

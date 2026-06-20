@@ -3,6 +3,7 @@ import client from '@/api/client';
 export interface ProductImage {
   id: number;
   url: string;
+  thumbnail_url?: string | null;
   alt_text: string | null;
   sort_order: number;
   is_primary: boolean;
@@ -17,8 +18,10 @@ export interface CategoryRef {
 export interface Product {
   id: number;
   name: string;
+  name_mk?: string | null;
   slug: string;
   description: string | null;
+  description_mk?: string | null;
   price: string;
   compare_at_price: string | null;
   sku: string;
@@ -39,8 +42,10 @@ export interface PaginatedProducts {
 
 export interface CreateProductData {
   name: string;
+  name_mk?: string | null;
   category_id: number | null;
   description: string | null;
+  description_mk?: string | null;
   price: number;
   compare_at_price: number | null;
   sku: string;
