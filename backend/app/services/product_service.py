@@ -24,6 +24,7 @@ def _list_dict(product: Product) -> dict:
     return {
         "id": product.id,
         "name": product.name,
+        "name_mk": product.name_mk,
         "slug": product.slug,
         "price": product.price,
         "compare_at_price": product.compare_at_price,

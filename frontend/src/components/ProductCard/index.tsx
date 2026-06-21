@@ -38,7 +38,7 @@ export default function ProductCard({ product, onAddToCart, images }: Props) {
     mouseX.set(0);
     mouseY.set(0);
   }
-
+console.log('Rendering ProductCard for', product);
   return (
     <MotionLink
       to={APP_ROUTES.PRODUCT(product.slug)}
