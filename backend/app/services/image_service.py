@@ -6,7 +6,7 @@ from PIL import Image
 
 from app.core.config import settings
 
-MAX_WIDTH = 1200
+MAX_WIDTH = 2400
 THUMB_WIDTH = 400
 
 
@@ -15,8 +15,10 @@ def _resize(data: bytes, ext: str, max_width: int) -> bytes:
     if img.width > max_width:
         ratio = max_width / img.width
         img = img.resize((max_width, int(img.height * ratio)), Image.LANCZOS)
-    buf = io.BytesIO()
     fmt = "JPEG" if ext.lower() in ("jpg", "jpeg") else ext.upper()
+    if fmt == "JPEG" and img.mode not in ("RGB", "L"):
+        img = img.convert("RGB")
+    buf = io.BytesIO()
     img.save(buf, format=fmt)
     return buf.getvalue()
 

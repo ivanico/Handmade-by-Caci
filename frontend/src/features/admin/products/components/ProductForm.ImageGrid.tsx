@@ -19,20 +19,24 @@ export default function ProductFormImageGrid({
   const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const handle = async (fn: () => Promise<void>) => {
     setLoading(true);
+    setUploadError('');
     try {
       await fn();
+    } catch {
+      setUploadError(t('admin.uploadFailed'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    handle(() => onUpload(files));
+    await handle(() => onUpload(files));
     e.target.value = '';
   };
 
@@ -112,6 +116,9 @@ export default function ProductFormImageGrid({
       </button>
       {images.length >= 8 && (
         <p className="text-xs text-gray-400 mt-1">{t('admin.maxImages')}</p>
+      )}
+      {uploadError && (
+        <p className="text-xs text-red-500 mt-1">{uploadError}</p>
       )}
     </div>
   );

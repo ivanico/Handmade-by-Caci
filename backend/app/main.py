@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.formparsers import MultiPartParser
 
-MultiPartParser.max_file_size = 10 * 1024 * 1024  # 10 MB per file
+MultiPartParser.max_file_size = 30 * 1024 * 1024  # 30 MB per file
 
 from app.core.config import settings
 from app.routers.auth import router as auth_router

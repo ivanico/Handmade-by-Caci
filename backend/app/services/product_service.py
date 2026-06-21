@@ -38,7 +38,9 @@ def _full_dict(product: Product) -> dict:
     d = _list_dict(product)
     d.update(
         {
+            "name_mk": product.name_mk,
             "description": product.description,
+            "description_mk": product.description_mk,
             "sku": product.sku,
             "is_active": product.is_active,
             "images": list(product.images),
@@ -133,7 +135,7 @@ async def update_product(db: AsyncSession, product_id: int, data: ProductUpdate)
     product = await product_repository.get_by_id(db, product_id)
     if not product:
         return None
-    updates = {k: v for k, v in data.model_dump().items() if v is not None}
+    updates = data.model_dump(exclude_unset=True)
     if "name" in updates:
         updates["slug"] = generate_slug(updates["name"])
     product = await product_repository.update(db, product, updates)

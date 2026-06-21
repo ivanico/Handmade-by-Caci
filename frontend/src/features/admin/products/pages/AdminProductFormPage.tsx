@@ -27,6 +27,7 @@ export default function AdminProductFormPage() {
       ? await adminProductsApi.update(Number(id), data)
       : await adminProductsApi.create(data);
     queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-product', id] });
     if (!isEdit) {
       navigate(`/admin/products/${res.data.id}/edit`);
     } else {

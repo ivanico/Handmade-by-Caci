@@ -154,6 +154,7 @@
     "addImages": "Add images",
     "uploading": "Uploading…",
     "maxImages": "Maximum 8 images reached.",
+    "uploadFailed": "Upload failed. Please try a JPG or PNG file.",
     "primary": "primary",
     "noneCategory": "— None —",
     "newCategory": "+ New Category",

@@ -115,7 +115,7 @@ export default function AdminProductsPage() {
                 </td>
                 <td className="px-4 py-3 text-gray-500">{p.sku}</td>
                 <td className="px-4 py-3 text-gray-500">{p.category?.name ?? '—'}</td>
-                <td className="px-4 py-3 text-gray-900">${Number(p.price).toFixed(2)}</td>
+                <td className="px-4 py-3 text-gray-900">MKD{Number(p.price).toFixed(2)}</td>
                 <td className="px-4 py-3 text-gray-500">{p.stock_quantity}</td>
                 <td className="px-4 py-3">
                   <Badge variant={p.is_active ? 'success' : 'muted'}>
