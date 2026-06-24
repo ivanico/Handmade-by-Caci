@@ -71,7 +71,7 @@ export default function Navbar() {
           animate={
             scrolled
               ? {
-                  maxWidth: 900,
+                  maxWidth: 1280,
                   borderRadius: 9999,
                   backgroundColor: '#ffffff',
                   boxShadow:
