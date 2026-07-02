@@ -38,8 +38,17 @@ async def create(
     slug: str,
     description: str | None,
     parent_id: int | None,
+    name_mk: str | None = None,
+    description_mk: str | None = None,
 ) -> Category:
-    category = Category(name=name, slug=slug, description=description, parent_id=parent_id)
+    category = Category(
+        name=name,
+        slug=slug,
+        description=description,
+        parent_id=parent_id,
+        name_mk=name_mk,
+        description_mk=description_mk,
+    )
     db.add(category)
     await db.flush()
     await db.refresh(category)

@@ -109,6 +109,7 @@ export default function AdminCategoriesPage() {
       </div>
 
       <CategoryModal
+        key={editCategory?.id ?? 'new'}
         isOpen={modalOpen}
         category={editCategory ?? undefined}
         onClose={closeModal}

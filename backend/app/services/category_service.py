@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -36,6 +37,8 @@ async def create_category(db: AsyncSession, data: CategoryCreate) -> Category:
         slug=slug,
         description=data.description,
         parent_id=data.parent_id,
+        name_mk=data.name_mk,
+        description_mk=data.description_mk,
     )
 
 
@@ -43,7 +46,7 @@ async def update_category(db: AsyncSession, category_id: int, data: CategoryUpda
     category = await category_repository.get_by_id(db, category_id)
     if not category:
         return None
-    updates = {k: v for k, v in data.model_dump().items() if v is not None}
+    updates = data.model_dump(exclude_unset=True)
     if "name" in updates and "slug" not in updates:
         updates["slug"] = generate_slug(updates["name"])
     return await category_repository.update(db, category, updates)
@@ -65,7 +68,11 @@ async def upload_image(db: AsyncSession, category_id: int, file_bytes: bytes, ex
         raise ValueError("Category not found")
     dir_path = os.path.join(settings.MEDIA_DIR, "categories")
     os.makedirs(dir_path, exist_ok=True)
-    filename = f"{category_id}.{ext}"
+    if category.image_url:
+        old_path = os.path.join(settings.MEDIA_DIR, category.image_url.removeprefix("/media/"))
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    filename = f"{uuid.uuid4().hex}.{ext}"
     file_path = os.path.join(dir_path, filename)
     with open(file_path, "wb") as f:
         f.write(file_bytes)
